@@ -1,0 +1,71 @@
+package com.pengyue.ptas.action.xt;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
+import com.opensymphony.xwork2.ActionSupport;
+import com.pengyue.ptas.bean.Tree;
+import com.pengyue.ptas.bean.XtJS;
+import com.pengyue.ptas.bean.XtQuanXian;
+import com.pengyue.ptas.service.xt.XtJSService;
+import com.pengyue.ptas.service.xt.XtQuanXianService;
+@Controller
+@Scope("prototype")
+public class XtJSAction extends ActionSupport{
+	@Autowired
+	private XtJSService xtJSService;
+	
+	/***
+	 * 跳转权限管理页面
+	 * @return
+	 */
+	public String list(){
+		return "list";
+	}
+	
+	
+	
+		
+	/***
+	 * 异步获取全部角色	
+	 */
+	public void getJsData(){
+				String html ="";
+				PrintWriter out = null;
+				try{
+					HttpServletResponse response = ServletActionContext.getResponse();
+					String id = ServletActionContext.getRequest().getParameter("id");
+					response.setCharacterEncoding("utf-8");
+					out = response.getWriter();
+					List<XtJS> jss = xtJSService.selectAll();
+					for(XtJS js :jss){
+						html+="<option value='"+js.getId()+"'>"+js.getJsmc()+"</option>";
+					}
+					out.print(html);
+				}catch(Exception e){
+					
+				}finally{
+					if(null!=out)
+						out.close();
+				}
+	}	
+	
+	
+	
+	
+	
+}

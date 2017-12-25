@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pengyue.ptas.dao.yy.MaintenanceRecordDaoImpl" >
+  <resultMap id="BaseResultMap" type="com.pengyue.ptas.bean.MaintenanceRecord" >
+    <id column="md_id" property="md_id"  />
+    <result column="md_mid" property="md_mid"  />
+    <result column="md_context" property="md_context"  />
+    <result column="md_species" property="md_species"  />
+    <result column="md_results" property="md_results" />
+    <result column="md_object" property="md_object" />
+    <result column="md_time" property="md_time"  />
+    <result column="m_name" property="m_name"  />
+    <result column="m_card" property="m_card"  />
+  </resultMap>
+ <!--  -->
+	<insert id="insert" parameterType="com.pengyue.ptas.bean.MaintenanceRecord">
+		insert into TB_MAINTENANCE_DEAL 
+			(md_id,md_mid,md_context,md_species,md_results,md_object,md_time)
+		values
+			(seq_md_id.nextval,#{md_mid},#{md_context},#{md_species},#{md_results},#{md_object},#{md_time})
+	</insert>
+	
+	<delete id="delete" parameterType="java.util.List" >
+		delete from TB_MAINTENANCE_DEAL  where md_id in
+		<foreach collection="list" item="md_id" separator="," open="(" close=")">
+		 	#{md_id}
+		</foreach>
+	</delete>
+	
+	<update id="update" parameterType="com.pengyue.ptas.bean.MaintenanceRecord">
+		update TB_MAINTENANCE_DEAL set 
+			md_mid = #{md_mid},
+			md_context = #{md_context},
+			md_species = #{md_species},
+			md_results = #{md_results},
+			md_object = #{md_object},
+			md_time = #{md_time}
+		where md_id = #{md_id}
+	</update>
+	
+	
+	<select id="selectByTime" parameterType="map" resultType="java.util.HashMap">
+		select tmd.md_species,count(*) as nu from TB_MAINTENANCE_DEAL tmd inner join tb_maintenance_personnel tmp 
+		on tmd.md_mid = tmp.m_id
+		where 1=1 
+		group by tmd.md_species
+	</select>
+	
+	<select id="selectByPrimaryKey" parameterType="map" resultMap="BaseResultMap">
+		select * from TB_MAINTENANCE_DEAL where md_id = #{md_id}
+	</select> 
+	
+	<select id="selectAll" resultMap="BaseResultMap">
+		select * from TB_MAINTENANCE_DEAL 
+	</select>
+	
+	<select id="selectLogin" resultMap="BaseResultMap">
+		select * from TB_MAINTENANCE_DEAL where 1=1
+	</select> 
+	
+	<select id="selectList" parameterType="com.pengyue.ptas.bean.MaintenanceRecord" resultMap="BaseResultMap">
+		select * from (
+			SELECT A.*, ROWNUM RN from
+				(select md.*,mp.m_name as m_name , mp.m_card as m_card 
+					from TB_MAINTENANCE_DEAL md 
+					inner join  
+					tb_maintenance_personnel mp
+ 					on md.md_mid = mp.m_id 
+					where 1=1
+					<if test="entity.m_name !=null ">
+					and mp.m_name like #{entity.m_name}
+					</if>
+					order by md.md_time desc
+				) A
+		)	
+		WHERE RN BETWEEN #{begin} AND #{end}  
+    	
+	</select>
+	
+	<select id="selectCount" parameterType="com.pengyue.ptas.bean.MaintenanceRecord" resultType="java.lang.Integer">
+		select count(*) as count 
+					from TB_MAINTENANCE_DEAL md 
+					inner join  
+					tb_maintenance_personnel mp
+ 					on md.md_mid = mp.m_id 
+		where 1=1
+		<if test="entity.m_name !=null ">
+			and mp.m_name like #{entity.m_name}
+		</if>
+	</select>
+	
+</mapper>

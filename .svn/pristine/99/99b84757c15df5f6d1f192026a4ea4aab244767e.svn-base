@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengyue.ptas.dao.xt.DictionaryDao">
+  <resultMap id="dictionary" type="com.pengyue.ptas.bean.Dictionary">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="type_code" jdbcType="VARCHAR" property="typeCode" />
+    <result column="type_name" jdbcType="VARCHAR" property="typeName" />
+  </resultMap>
+  
+  
+  <resultMap id="dictionaryValues" type="com.pengyue.ptas.bean.DictionaryValue">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="value" jdbcType="VARCHAR" property="value" />
+    <result column="dic_id" jdbcType="VARCHAR" property="dicId" />
+  </resultMap>
+  
+ <sql id="Base_Column_List">
+    id,type_code,type_name
+  </sql>
+  
+  <!--字典插入 -->
+  <insert id="insertDic" parameterType="com.pengyue.ptas.bean.Dictionary">
+    insert into tb_dictionary (id,type_code,type_name)
+    values (sys_guid(),#{typeCode,jdbcType=VARCHAR},#{typeName,jdbcType=VARCHAR})
+  </insert>
+  
+  <!--字典值插入 -->
+  <insert id="insertValue" parameterType="com.pengyue.ptas.bean.DictionaryValue">
+    insert into tb_dictionary_value (id,name,value,dic_id)
+    values (sys_guid(),#{name,jdbcType=VARCHAR},#{value,jdbcType=VARCHAR},#{dicId,jdbcType=VARCHAR})
+  </insert>
+  
+  <!--字典修改-->
+  <update id="updateDic" parameterType="com.pengyue.ptas.bean.Dictionary">
+    update tb_dictionary
+    <set>
+      <if test="typeCode != null">
+        type_code = #{typeCode,jdbcType=VARCHAR},
+      </if>
+       <if test="typeName != null">
+        type_name = #{typeName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <!--字典值修改-->
+  <update id="updateValue" parameterType="com.pengyue.ptas.bean.DictionaryValue">
+    update tb_dictionary_value
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+       <if test="value != null">
+        value = #{value,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <!--字典删除-->
+   <delete id="deleteDic" parameterType="java.lang.String">
+    delete from tb_dictionary
+    where ID in
+    <foreach collection="list" item="id" separator="," open="(" close=")">
+  		#{id,jdbcType=VARCHAR}
+  	</foreach>
+  </delete>
+  
+  <!--字典值删除-->
+   <delete id="deleteValue" parameterType="java.lang.String">
+    delete from tb_dictionary_value
+    where ID in
+    <foreach collection="list" item="id" separator="," open="(" close=")">
+  		#{id,jdbcType=VARCHAR}
+  	</foreach>
+  </delete>
+  
+  
+   <!-- 根据主键查找 -->
+ <select id="selectValueByDicId" parameterType="java.lang.String" resultMap="dictionaryValues">
+    select *
+    from tb_dictionary_value
+    where dic_ID = #{dicId,jdbcType=VARCHAR}
+  </select> 
+  
+  
+   <!--字典全部 -->
+  <select id="getAll" parameterType="java.lang.String" resultMap="dictionary">
+    select *
+    from TB_dictionary
+  </select>
+ <!--   
+  根据主键查找
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_sx_plan
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+ 
+  
+  
+  
+
+  
+  
+  
+  <insert id="insertSelective" parameterType="com.pengyue.ptas.bean.SxPlan">
+    insert into TB_sx_plan
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="sxxmId != null">
+        sxxm_id,
+      </if>
+      <if test="url != null">
+        uil,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sxxmId != null">
+        #{sxxmId,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.pengyue.ptas.bean.SxResource">
+    update tb_sx_resource
+    <set>
+      <if test="jsmc != null">
+        JSMC = #{jsmc,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <update id="updateByPrimaryKey" parameterType="com.pengyue.ptas.bean.SxResource">
+    update tb_sx_resource
+    set JSMC = #{jsmc,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update> -->
+
+  
+</mapper>

@@ -1,0 +1,37 @@
+package com.pengyue.ptas.dao.yy;
+
+import java.util.List;
+
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.pengyue.ptas.bean.SxResource;
+import com.pengyue.ptas.util.PageInfo;
+import com.pengyue.ptas.util.ResultListInfo;
+
+@Repository
+public class sxResourceDaoImpl implements SxResourceDao {
+	@Autowired
+	private SqlSessionTemplate sqlSessionTemplate;
+
+	@Override
+	public ResultListInfo<SxResource> getList(PageInfo<SxResource> pageINfo) {
+		List<SxResource> result = sqlSessionTemplate.selectList("com.pengyue.ptas.dao.yy.SxResourceDao.getList",pageINfo);
+		int total = sqlSessionTemplate.selectOne("com.pengyue.ptas.dao.yy.SxResourceDao.getCount",pageINfo);
+		return new ResultListInfo<SxResource>(result, total);
+	}
+
+	@Override
+	public int insert(SxResource record) {
+		return sqlSessionTemplate.insert("com.pengyue.ptas.dao.yy.SxResourceDao.insert",record);
+	}
+
+	@Override
+	public ResultListInfo<SxResource> getListByChecked(
+			PageInfo<SxResource> pageInfo) {
+		List<SxResource> result = sqlSessionTemplate.selectList("com.pengyue.ptas.dao.yy.SxResourceDao.getListByChecked",pageInfo);
+		int total = sqlSessionTemplate.selectOne("com.pengyue.ptas.dao.yy.SxResourceDao.getCountByChecked",pageInfo);
+		return new ResultListInfo<SxResource>(result, total);
+	}
+}

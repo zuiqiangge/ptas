@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengyue.ptas.dao.yy.SxResourceDao">
+  <resultMap id="BaseResultMap" type="com.pengyue.ptas.bean.SxResource">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sxxm_id" jdbcType="VARCHAR" property="sxxmId" />
+    <result column="uil" jdbcType="VARCHAR" property="url" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    ID,name,sxxm_id,uil
+  </sql>
+  
+  <!--根据主键查找-->
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_sx_resources
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+ 
+  
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_sx_resource
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <!-- 一般插入 -->
+  <insert id="insert" parameterType="com.pengyue.ptas.bean.SxResource">
+    insert into tb_sx_resource (ID, JSMC)
+    values (sys_guid(), #{jsmc,jdbcType=VARCHAR})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.pengyue.ptas.bean.SxResource">
+    insert into tb_sx_resource
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="sxxmId != null">
+        sxxm_id,
+      </if>
+      <if test="url != null">
+        uil,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sxxmId != null">
+        #{sxxmId,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  
+ <!--  <update id="updateByPrimaryKeySelective" parameterType="com.pengyue.ptas.bean.SxResource">
+    update tb_sx_resource
+    <set>
+      <if test="jsmc != null">
+        JSMC = #{jsmc,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update> -->
+  
+  
+  <!-- <update id="updateByPrimaryKey" parameterType="com.pengyue.ptas.bean.SxResource">
+    update tb_sx_resource
+    set JSMC = #{jsmc,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update> -->
+
+  
+   <!--条件分页查询-->
+  
+  <sql id="query_condition">
+  	 select t.*
+    ,rownum rownu 
+    from tb_sx_resource t where 1=1
+  	<if test="entity.name != null" >
+         and name like #{entity.name}
+    </if>
+  </sql>
+  <select id="getList" parameterType="com.pengyue.ptas.util.PageInfo" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from (
+    <include refid="query_condition" />
+    and rownum &lt;= #{end}) t
+    where t.rownu &gt;=#{begin}
+  </select>
+  
+  
+  <!--获取条件查询总条数-->
+  <select id="getCount" parameterType="com.pengyue.ptas.bean.SxResource" resultType="Integer">
+    select 
+   		count(*)
+    from tb_sx_resource where 1=1
+    <if test="entity.jsmc != null" >
+         and name like #{entity.name,jdbcType=VARCHAR}
+    </if>
+  </select>
+</mapper>

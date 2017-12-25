@@ -1,0 +1,11 @@
+package com.pengyue.ptas.service.xt;
+
+import java.util.List;
+
+import com.pengyue.ptas.bean.XtJSAndUser;
+
+public interface XtJSAndUserService {
+	public List<XtJSAndUser> getListByProperty(XtJSAndUser record);
+	int insert(XtJSAndUser record);
+	public int deleteAllByUserId(String userId);
+}

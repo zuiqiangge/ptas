@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengyue.ptas.dao.yy.HardWareDao">
+  <resultMap id="BaseResultMap" type="com.pengyue.ptas.bean.HardWare">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="mac" jdbcType="VARCHAR" property="mac" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="ip" jdbcType="VARCHAR" property="ip" />
+    <result column="os" jdbcType="INTEGER" property="os" />
+    <result column="pinpai" jdbcType="VARCHAR" property="pinpai" />
+    <result column="RUN_STATE" jdbcType="VARCHAR" property="runState" />
+  </resultMap>
+  
+ <sql id="Base_Column_List">
+    id,mac,name,ip,os,pinpai,run_state
+  </sql>
+  
+  <!-- 一般插入 -->
+  <insert id="insert" parameterType="com.pengyue.ptas.bean.HardWare">
+    insert into TB_hardware (id,mac,name,ip,os,pinpai)
+    values (sys_guid(),#{mac,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},
+    		#{ip,jdbcType=VARCHAR},#{os,jdbcType=VARCHAR},
+    		#{pinpai,jdbcType=VARCHAR})
+  </insert>
+  
+  <!--修改-->
+  <update id="updateByPrimaryKeySelective" parameterType="com.pengyue.ptas.bean.HardWare">
+    update TB_hardware
+    <set>
+      <if test="mac != null">
+        mac = #{mac,jdbcType=VARCHAR},
+      </if>
+       <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+       <if test="ip != null">
+        ip = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="os != null">
+        os = #{os,jdbcType=VARCHAR},
+      </if>
+      <if test="pinpai != null">
+        pinpai = #{pinpai,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!--删除-->
+   <delete id="delete" parameterType="java.lang.String">
+    delete from TB_hardware
+    where ID in
+    <foreach collection="list" item="id" separator="," open="(" close=")">
+  		#{id,jdbcType=VARCHAR}
+  	</foreach>
+  </delete>
+  
+  
+   <!-- 根据主键查找 -->
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_hardware
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  
+   <!--全部 -->
+  <select id="getAll" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_hardware
+  </select>
+ <!--   
+  根据主键查找
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_sx_plan
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+ 
+  
+  
+  
+
+  
+  
+  
+  <insert id="insertSelective" parameterType="com.pengyue.ptas.bean.SxPlan">
+    insert into TB_sx_plan
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="sxxmId != null">
+        sxxm_id,
+      </if>
+      <if test="url != null">
+        uil,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sxxmId != null">
+        #{sxxmId,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.pengyue.ptas.bean.SxResource">
+    update tb_sx_resource
+    <set>
+      <if test="jsmc != null">
+        JSMC = #{jsmc,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <update id="updateByPrimaryKey" parameterType="com.pengyue.ptas.bean.SxResource">
+    update tb_sx_resource
+    set JSMC = #{jsmc,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update> -->
+
+  
+   <!--分页查询 -->
+  <sql id="query_condition">
+  	 select t.*
+    ,rownum rownu 
+    from TB_hardware t where 1=1
+  </sql>
+  <select id="getList" parameterType="com.pengyue.ptas.util.PageInfo" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from (
+    <include refid="query_condition" />
+    and rownum &lt;= #{end}) t
+    where t.rownu &gt;=#{begin}
+  </select>
+  
+  
+  <!-- 获取条件查询总条数 -->
+  <select id="getCount" parameterType="com.pengyue.ptas.bean.HardWare" resultType="Integer">
+    select 
+   		count(*)
+    from TB_hardware
+  </select>
+</mapper>

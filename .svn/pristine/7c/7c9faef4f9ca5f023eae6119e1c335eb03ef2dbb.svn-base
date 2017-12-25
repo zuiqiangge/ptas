@@ -1,0 +1,56 @@
+
+
+.search-box .kv-item{
+	float: left;
+}
+
+.search-box .kv-item input{
+	width: 130px;
+}
+
+
+
+.search-box .query-btn{
+	float: left;
+	margin-left: 30px;
+}
+
+/*µ¯´°ÄÚÈÝÑùÊ½*/
+
+.addDialog{
+	display: none;
+	text-align:center;
+}
+.delDialog{
+	display: none;
+	text-align:center;
+}
+.dialog-content .buttons{
+	margin-top:350px; 
+}
+
+
+.tool{
+	margin: 11px 0 0 0;
+}
+.tool a{
+	float: left;
+	line-height: 24px;
+	color: #fff;
+	background: #3b9fe1;
+	border-radius: 2px;
+}
+.tool a.tips{
+	padding: 0 8px;
+	margin:0 1px 0 0;
+}
+.tool a.help-btn{
+	margin: 0 0 0 4px;
+	padding: 0 10px 0 25px;
+	background:#3b9fe1 url(../images/help.png) no-repeat 6px center;
+}
+.tool a.quit-btn{
+	margin: 0 0 0 5px;
+	padding: 0 10px 0 25px;
+	background:#3b9fe1 url(../images/exit.png) no-repeat 6px center;
+}

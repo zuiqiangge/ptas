@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+    
+
+<package name="interceptorAll" extends="struts-default">
+		
+		<!-- 默认拦截器 -->
+		<!-- <default-interceptor-ref name="mydefault" /> -->
+		
+	</package>
+	
+	<!--登陆-->
+	<package name="login" namespace="/" extends="struts-default">
+		<action name="login_*" class="com.pengyue.ptas.action.xt.LoginAction" method="{1}">
+			<result name="index">/index.jsp</result>
+			<result name="login">/login.jsp</result>
+		</action>
+	</package>
+	
+	<!--系统管理-->
+	<package name="system" namespace="/" extends="struts-default">
+		<action name="system_*" class="com.pengyue.ptas.action.xt.SystemAction" method="{1}">
+			<result name="index">/sta/system/index.jsp</result>
+		</action>
+		
+		<!--系统用户管理-->
+		<action name="xtUser_*" class="com.pengyue.ptas.action.xt.XtUserAction" method="{1}">
+			<result name="list">/sta/system/system_user_list.jsp</result>
+		</action>
+	
+		<!--权限管理-->
+		<action name="xtQx_*" class="com.pengyue.ptas.action.xt.XtQxAction" method="{1}">
+			<result name="list">/sta/system/privilege_management_list.jsp</result>
+		</action>
+		
+		<!--角色管理-->
+		<action name="xtJs_*" class="com.pengyue.ptas.action.xt.XtJSAction" method="{1}">
+			<result name="list">/sta/system/role_relation_list.jsp</result>
+		</action>
+		
+		<!--角色和权限管理-->
+	</package>
+
+	<!--工作人员管理-->
+	<package name="persional" namespace="/" extends="struts-default">
+		<action name="user_*" class="com.pengyue.ptas.action.yy.UserManageAction" method="{1}">
+			<result name="index">/sta/personal/index.jsp</result>
+			<result name="personalList">/sta/personal/personal_list.jsp</result>
+		</action>
+	</package>
+</struts>

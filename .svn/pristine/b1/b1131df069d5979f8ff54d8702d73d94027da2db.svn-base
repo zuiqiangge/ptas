@@ -1,0 +1,17 @@
+package com.pengyue.ptas.util;
+
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+
+public class InitListener implements ServletContextListener {    
+    
+    public void contextDestroyed(ServletContextEvent sce) {    
+        System.out.println("web exit ... ");    
+    }    
+    
+    public void contextInitialized(ServletContextEvent sce) {    
+        System.out.println("web init ... ");    
+        //系统的初始化工作    
+        // ...    
+    }    
+}   

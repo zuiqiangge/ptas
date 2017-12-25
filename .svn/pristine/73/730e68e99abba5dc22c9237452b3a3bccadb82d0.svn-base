@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengyue.ptas.dao.xt.SoftWareLogDao">
+  <resultMap id="baseMap" type="com.pengyue.ptas.bean.SoftWareLog">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="o_name" jdbcType="VARCHAR" property="oName" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <!-- <result column="xt_user" jdbcType="VARCHAR" property="xtUser" /> -->
+    <result column="soft_id" jdbcType="VARCHAR" property="softId" />
+     <association property="xtUser" javaType="com.pengyue.ptas.bean.XtUser">
+            <id column="ID" jdbcType="VARCHAR" property="id" />
+    		<result column="LOGINID" jdbcType="VARCHAR" property="loginid" />
+    		<result column="PASSWORD" jdbcType="VARCHAR" property="password" />
+    		<result column="USERNAME" jdbcType="VARCHAR" property="username" />
+         </association>
+  </resultMap>
+  
+  
+
+  
+ <sql id="Base_Column_List">
+    id,o_name,create_time,xt_user,soft_id
+  </sql>
+  
+  <!--日志插入 -->
+  <insert id="insert" parameterType="com.pengyue.ptas.bean.SoftWareLog">
+    insert into tb_software_log (id,o_name,create_time,xt_user,soft_id)
+    values (sys_guid(),#{oName,jdbcType=VARCHAR},to_char(sysdate,'YYYY-MM-DD HH24:MI:SS'),#{xtUser.id,jdbcType=VARCHAR},
+    #{softId,jdbcType=VARCHAR})
+  </insert>
+  
+ 
+  
+  
+   <!-- 根据主键查找 -->
+ <select id="selectValueBySoftId" parameterType="java.lang.String" resultMap="baseMap">
+    select *
+    from tb_software_log log,tb_xt_user users where log.xt_User = users.id
+    and log.soft_id = #{SoftId,jdbcType=VARCHAR} order by create_time desc
+  </select> 
+  
+  
+   <!--日志全部 -->
+  <select id="getAll" parameterType="java.lang.String" resultMap="baseMap">
+    select *
+    from tb_software_log order by create_time desc
+  </select>
+ 
+
+  
+</mapper>

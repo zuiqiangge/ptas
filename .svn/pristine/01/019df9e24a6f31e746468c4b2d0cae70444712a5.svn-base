@@ -1,0 +1,22 @@
+package com.pengyue.ptas.dao.xt;
+
+import java.util.List;
+
+import com.pengyue.ptas.bean.XtJS;
+
+public interface XtJSDao {
+    int deleteByPrimaryKey(String id);
+
+    int insert(XtJS record);
+
+    int insertSelective(XtJS record);
+
+    XtJS selectByPrimaryKey(String id);
+
+    int updateByPrimaryKeySelective(XtJS record);
+
+    int updateByPrimaryKey(XtJS record);
+    
+    List<XtJS> selectAll();
+    List<XtJS> selectByUserId(String userId);
+}

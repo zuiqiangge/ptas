@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengyue.ptas.dao.yy.SxOrderDao">
+  <resultMap id="BaseResultMap" type="com.pengyue.ptas.bean.SxOrder">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="sxzz_id" jdbcType="VARCHAR" property="sxzzId" />
+    <result column="sx_content" jdbcType="VARCHAR" property="sxContent" />
+    <result column="time" jdbcType="VARCHAR" property="time" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="teacher" jdbcType="VARCHAR" property="teacher" />
+    <result column="place" jdbcType="VARCHAR" property="place" />
+  </resultMap>
+  
+ <sql id="Base_Column_List">
+    id,sxzz_id,sx_content,time,teacher,place,status
+  </sql>
+  
+  <!-- 一般插入 -->
+  <insert id="insert" parameterType="com.pengyue.ptas.bean.SxOrder">
+    insert into TB_sx_order (id,sxzz_id,sx_content,time,status)
+    values (sys_guid(),#{sxzzId,jdbcType=VARCHAR},
+    		#{sxContent,jdbcType=VARCHAR},#{time,jdbcType=VARCHAR},
+    		#{status,jdbcType=VARCHAR})
+  </insert>
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.pengyue.ptas.bean.SxOrder">
+    update tb_sx_order
+    <set>
+      <if test="sxzzId != null">
+        sxzzId = #{sxzzId,jdbcType=VARCHAR},
+      </if>
+       <if test="sxContent != null">
+        sxContent = #{sxContent,jdbcType=VARCHAR},
+      </if>
+       <if test="time != null">
+        time = #{time,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        teacher = #{teacher,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        place = #{place,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+   <delete id="delete" parameterType="java.lang.String">
+    delete from tb_sx_order
+    where ID in
+    <foreach collection="list" item="id" separator="," open="(" close=")">
+  		#{id,jdbcType=VARCHAR}
+  	</foreach>
+  </delete>
+ <!--   
+  根据主键查找
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_sx_plan
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+ 
+  
+  
+  
+
+  
+  
+  
+  <insert id="insertSelective" parameterType="com.pengyue.ptas.bean.SxPlan">
+    insert into TB_sx_plan
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="sxxmId != null">
+        sxxm_id,
+      </if>
+      <if test="url != null">
+        uil,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sxxmId != null">
+        #{sxxmId,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.pengyue.ptas.bean.SxResource">
+    update tb_sx_resource
+    <set>
+      <if test="jsmc != null">
+        JSMC = #{jsmc,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <update id="updateByPrimaryKey" parameterType="com.pengyue.ptas.bean.SxResource">
+    update tb_sx_resource
+    set JSMC = #{jsmc,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update> -->
+
+  
+   <!--分页查询 -->
+  <sql id="query_condition">
+  	 select t.*
+    ,rownum rownu 
+    from TB_sx_order t where 1=1
+  </sql>
+  <select id="getList" parameterType="com.pengyue.ptas.util.PageInfo" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from (
+    <include refid="query_condition" />
+    and rownum &lt;= #{end}) t
+    where t.rownu &gt;=#{begin}
+  </select>
+  
+  
+  <!-- 获取条件查询总条数 -->
+  <select id="getCount" parameterType="com.pengyue.ptas.bean.SxPlan" resultType="Integer">
+    select 
+   		count(*)
+    from TB_sx_order
+  </select>
+</mapper>

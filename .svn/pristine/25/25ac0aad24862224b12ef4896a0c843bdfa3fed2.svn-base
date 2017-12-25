@@ -1,0 +1,75 @@
+package com.pengyue.ptas.service.yy;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.pengyue.ptas.bean.AttackLog;
+import com.pengyue.ptas.bean.HardWare;
+import com.pengyue.ptas.bean.SxOrder;
+import com.pengyue.ptas.bean.SxPlan;
+import com.pengyue.ptas.bean.YyGzryxxb;
+import com.pengyue.ptas.dao.yy.AttackLogDao;
+import com.pengyue.ptas.dao.yy.HardWareDao;
+import com.pengyue.ptas.dao.yy.SxOrderDao;
+import com.pengyue.ptas.dao.yy.SxPlanDao;
+import com.pengyue.ptas.dao.yy.YyGzryxxbDao;
+import com.pengyue.ptas.util.PageInfo;
+import com.pengyue.ptas.util.ResultListInfo;
+
+@Service("attackLogService")
+@Transactional
+public class AttackLogServiceImpl implements AttackLogService {
+	@Autowired
+	private AttackLogDao attackLogDao;
+
+	@Override
+	public ResultListInfo<AttackLog> getList(PageInfo<AttackLog> pageInfo) {
+		return attackLogDao.getList(pageInfo);
+	}
+
+	@Override
+	public int insert(AttackLog record) {
+		return attackLogDao.insert(record);
+	}
+
+	@Override
+	public int update(AttackLog record) {
+		return attackLogDao.update(record);
+	}
+
+	
+
+	
+	public int delete(List<String> list){
+		return attackLogDao.delete(list);
+	}
+
+	@Override
+	public AttackLog selectByPrimaryKey(String id) {
+		return attackLogDao.selectByPrimaryKey(id);
+	}
+
+	@Override
+	public List<AttackLog> getALl() {
+		return attackLogDao.getAll();
+	}
+
+	@Override
+	public int getAllCount() {
+		// TODO Auto-generated method stub
+		return attackLogDao.getAllCount();
+	}
+
+
+	
+
+	
+
+
+
+
+	
+}

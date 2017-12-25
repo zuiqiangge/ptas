@@ -1,0 +1,23 @@
+package com.pengyue.ptas.service.xt;
+
+import java.util.List;
+
+import com.pengyue.ptas.bean.Dictionary;
+import com.pengyue.ptas.bean.DictionaryValue;
+import com.pengyue.ptas.bean.XtJSAndUser;
+import com.pengyue.ptas.bean.XtJsQx;
+import com.pengyue.ptas.util.TypecodeAndValue;
+
+
+public interface WeiHuService {
+	public int insertDic(Dictionary dic);
+	public int insertValue(DictionaryValue dicValue);
+	public int updateDic(Dictionary dic);
+	public int updateValue(DictionaryValue dicValue);
+	public int deleteDic(List<String> ids);
+	public int deleteValue(List<String> ids);
+    public List<Dictionary> getAll();
+    public List<DictionaryValue> selectValueByDicId(String dicId);
+    public List<DictionaryValue> getAllValuesByCode(String typeCode);
+    public DictionaryValue getValuesByCodeAndValue(TypecodeAndValue tav);
+}

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pengyue.ptas.dao.yy.YyGzryxxbDao" >
+  <resultMap id="BaseResultMap" type="com.pengyue.ptas.bean.YyGzryxxb" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="XB" property="xb" jdbcType="VARCHAR" />
+    <result column="ZBFLAG" property="zbflag" jdbcType="VARCHAR" />
+    <result column="SCLY" property="scly" jdbcType="VARCHAR" />
+    <result column="LXFS" property="lxfs" jdbcType="VARCHAR" />
+    <result column="BM" property="bm" jdbcType="VARCHAR" />
+    <result column="AGE" property="age" jdbcType="VARCHAR" />
+    <result column="SFZH" property="sfzh" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, NAME, XB, ZBFLAG, SCLY, LXFS, BM, AGE, SFZH
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_YY_GZRYXXB
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from TB_YY_GZRYXXB
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <!--批量删除-->
+  <delete id="deleteByIds" parameterType="java.util.List" >
+  	delete from TB_YY_GZRYXXB
+    where ID in
+  	<foreach collection="list" item="id" separator="," open="(" close=")">
+  		#{id,jdbcType=VARCHAR}
+  	</foreach>
+  </delete>
+  
+  <insert id="insert" parameterType="com.pengyue.ptas.bean.YyGzryxxb" >
+    insert into TB_YY_GZRYXXB (ID, NAME, XB, 
+      ZBFLAG, SCLY, LXFS, 
+      BM, AGE, SFZH)
+    values (sys_guid(), #{name,jdbcType=VARCHAR}, #{xb,jdbcType=VARCHAR}, 
+      #{zbflag,jdbcType=VARCHAR}, #{scly,jdbcType=VARCHAR}, #{lxfs,jdbcType=VARCHAR}, 
+      #{bm,jdbcType=VARCHAR}, #{age,jdbcType=VARCHAR}, #{sfzh,jdbcType=VARCHAR})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.pengyue.ptas.bean.YyGzryxxb" >
+    insert into TB_YY_GZRYXXB
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="name != null" >
+        NAME,
+      </if>
+      <if test="xb != null" >
+        XB,
+      </if>
+      <if test="zbflag != null" >
+        ZBFLAG,
+      </if>
+      <if test="scly != null" >
+        SCLY,
+      </if>
+      <if test="lxfs != null" >
+        LXFS,
+      </if>
+      <if test="bm != null" >
+        BM,
+      </if>
+      <if test="age != null" >
+        AGE,
+      </if>
+      <if test="sfzh != null" >
+        SFZH,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="xb != null" >
+        #{xb,jdbcType=VARCHAR},
+      </if>
+      <if test="zbflag != null" >
+        #{zbflag,jdbcType=VARCHAR},
+      </if>
+      <if test="scly != null" >
+        #{scly,jdbcType=VARCHAR},
+      </if>
+      <if test="lxfs != null" >
+        #{lxfs,jdbcType=VARCHAR},
+      </if>
+      <if test="bm != null" >
+        #{bm,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null" >
+        #{age,jdbcType=VARCHAR},
+      </if>
+      <if test="sfzh != null" >
+        #{sfzh,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.pengyue.ptas.bean.YyGzryxxb" >
+    update TB_YY_GZRYXXB
+    <set >
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="xb != null" >
+        XB = #{xb,jdbcType=VARCHAR},
+      </if>
+      <if test="zbflag != null" >
+        ZBFLAG = #{zbflag,jdbcType=VARCHAR},
+      </if>
+      <if test="scly != null" >
+        SCLY = #{scly,jdbcType=VARCHAR},
+      </if>
+      <if test="lxfs != null" >
+        LXFS = #{lxfs,jdbcType=VARCHAR},
+      </if>
+      <if test="bm != null" >
+        BM = #{bm,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null" >
+        AGE = #{age,jdbcType=VARCHAR},
+      </if>
+      <if test="sfzh != null" >
+        SFZH = #{sfzh,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <update id="updateByPrimaryKey" parameterType="com.pengyue.ptas.bean.YyGzryxxb" >
+    update TB_YY_GZRYXXB
+    set NAME = #{name,jdbcType=VARCHAR},
+      XB = #{xb,jdbcType=VARCHAR},
+      ZBFLAG = #{zbflag,jdbcType=VARCHAR},
+      SCLY = #{scly,jdbcType=VARCHAR},
+      LXFS = #{lxfs,jdbcType=VARCHAR},
+      BM = #{bm,jdbcType=VARCHAR},
+      AGE = #{age,jdbcType=VARCHAR},
+      SFZH = #{sfzh,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!--条件分页查询-->
+  
+  <sql id="query_condition">
+  	 select t.*
+    ,rownum rownu 
+    from TB_YY_GZRYXXB t where 1=1
+  	<if test="entity.name != null" >
+         and NAME like #{entity.name}
+      </if>
+      <if test="entity.xb != null" >
+        and XB = #{entity.xb}
+      </if>
+      <if test="entity.zbflag != null" >
+        and ZBFLAG = #{entity.zbflag}
+      </if>
+      <if test="entity.scly != null" >
+        and SCLY = #{entity.scly}
+      </if>
+      <if test="entity.lxfs != null" >
+        and LXFS = #{entity.lxfs}
+      </if>
+      <if test="entity.bm != null" >
+        and BM = #{entity.bm}
+       </if>
+  </sql>
+  <select id="getList" parameterType="com.pengyue.ptas.util.PageInfo" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from (
+    <include refid="query_condition" />
+    and rownum &lt;= #{end}) t
+    where t.rownu &gt;=#{begin}
+  </select>
+  
+  <!--获取条件查询总条数-->
+  <select id="getCount" parameterType="com.pengyue.ptas.bean.YyGzryxxb" resultType="Integer">
+    select 
+   		count(*)
+    from tb_yy_gzryxxb where 1=1
+    <if test="entity.name != null" >
+         and NAME like #{entity.name,jdbcType=VARCHAR}
+    </if>
+    <if test="entity.xb != null" >
+        and XB = #{entity.xb,jdbcType=VARCHAR}
+    </if>
+    <if test="entity.zbflag != null" >
+        and ZBFLAG = #{entity.zbflag,jdbcType=VARCHAR}
+    </if>
+    <if test="entity.scly != null" >
+        and SCLY = #{entity.scly,jdbcType=VARCHAR}
+    </if>
+    <if test="entity.lxfs != null" >
+        and LXFS = #{entity.lxfs,jdbcType=VARCHAR}
+    </if>
+    <if test="entity.bm != null" >
+        and BM = #{entity.bm,jdbcType=VARCHAR}
+    </if>
+  </select>
+</mapper>

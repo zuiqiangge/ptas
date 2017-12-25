@@ -1,0 +1,33 @@
+package com.pengyue.ptas.action.xt;
+
+import java.io.PrintWriter;
+
+import net.sf.json.JSONObject;
+
+import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
+import com.opensymphony.xwork2.ActionSupport;
+import com.pengyue.ptas.bean.XtUser;
+import com.pengyue.ptas.service.xt.XtUserService;
+import com.pengyue.ptas.util.PageInfo;
+import com.pengyue.ptas.util.ResultListInfo;
+@Controller
+@Scope("prototype")
+public class ZhAppAction extends ActionSupport{
+	@Autowired
+	private XtUserService xtUserService;
+	
+	
+	/***
+	 * 跳转系统管理导航页
+	 */
+	public String index(){
+		return "index";
+	}
+	
+	
+	
+}

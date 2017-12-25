@@ -1,0 +1,42 @@
+package com.pengyue.ptas.dao.yy;
+
+import java.util.List;
+
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.pengyue.ptas.bean.HardWare;
+import com.pengyue.ptas.bean.SoftWare;
+import com.pengyue.ptas.bean.SxOrder;
+import com.pengyue.ptas.bean.SxPlan;
+import com.pengyue.ptas.util.PageInfo;
+import com.pengyue.ptas.util.ResultListInfo;
+@Repository("softWareDao")
+public class SoftWareDaoImpl implements SoftWareDao {
+	@Autowired
+	private SqlSessionTemplate sqlSessionTemplate;
+	@Override
+	public ResultListInfo<SoftWare> getList(PageInfo<SoftWare> pageInfo) {
+		List<SoftWare> result =  sqlSessionTemplate.selectList("com.pengyue.ptas.dao.yy.SoftWareDao.getList",pageInfo);
+		int total = sqlSessionTemplate.selectOne("com.pengyue.ptas.dao.yy.SoftWareDao.getCount",pageInfo);
+		return new ResultListInfo<SoftWare>(result, total);
+	}
+	@Override
+	public int insert(SoftWare sxOrder) {
+		return sqlSessionTemplate.insert("com.pengyue.ptas.dao.yy.SoftWareDao.insert",sxOrder);
+	}
+	@Override
+	public int update(SoftWare sxOrder) {
+		return sqlSessionTemplate.update("com.pengyue.ptas.dao.yy.SoftWareDao.updateByPrimaryKeySelective", sxOrder);
+	}
+	@Override
+	public int delete(List<String> list) {
+		return sqlSessionTemplate.delete("com.pengyue.ptas.dao.yy.SoftWareDao.delete", list);
+	}
+	@Override
+	public SoftWare selectByProperty(SoftWare softWare) {
+		return sqlSessionTemplate.selectOne("com.pengyue.ptas.dao.yy.SoftWareDao.selectByProperty",softWare);
+	}
+
+}

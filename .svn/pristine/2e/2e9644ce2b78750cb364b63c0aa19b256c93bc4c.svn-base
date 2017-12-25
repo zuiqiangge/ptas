@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengyue.ptas.dao.xt.XtJSAndUserDao">
+  <resultMap id="BaseResultMap" type="com.pengyue.ptas.bean.XtJSAndUser">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="JSID" jdbcType="VARCHAR" property="jsid" />
+    <result column="USERID" jdbcType="VARCHAR" property="userid" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    ID, JSID, USERID
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_XT_JSXX_USER
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+   <select id="selectByProperty" parameterType="com.pengyue.ptas.bean.XtJSAndUser" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_XT_JSXX_USER
+    where 1=1
+   <if test="id != null">
+         and id = #{id,jdbcType=VARCHAR}
+      </if>
+      <if test="jsid != null">
+         and jsid = #{jsid,jdbcType=VARCHAR}
+      </if>
+      <if test="userid != null">
+        and userid = #{userid,jdbcType=VARCHAR}
+      </if>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from TB_XT_JSXX_USER
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.pengyue.ptas.bean.XtJSAndUser">
+    insert into TB_XT_JSXX_USER (ID, JSID, USERID
+      )
+    values (sys_guid(), #{jsid,jdbcType=VARCHAR}, #{userid,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.pengyue.ptas.bean.XtJSAndUser">
+    insert into TB_XT_JSXX_USER
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="jsid != null">
+        JSID,
+      </if>
+      <if test="userid != null">
+        USERID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="jsid != null">
+        #{jsid,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pengyue.ptas.bean.XtJSAndUser">
+    update TB_XT_JSXX_USER
+    <set>
+      <if test="jsid != null">
+        JSID = #{jsid,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null">
+        USERID = #{userid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pengyue.ptas.bean.XtJSAndUser">
+    update TB_XT_JSXX_USER
+    set JSID = #{jsid,jdbcType=VARCHAR},
+      USERID = #{userid,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+</mapper>

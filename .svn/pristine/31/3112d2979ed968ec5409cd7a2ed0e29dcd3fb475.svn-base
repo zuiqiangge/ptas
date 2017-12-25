@@ -1,0 +1,335 @@
+package com.pengyue.ptas.action.yy;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONObject;
+
+import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Controller;
+
+import com.opensymphony.xwork2.ActionSupport;
+import com.pengyue.ptas.bean.Organization;
+import com.pengyue.ptas.bean.SxOrder;
+import com.pengyue.ptas.bean.SxPlan;
+import com.pengyue.ptas.bean.SxProject;
+import com.pengyue.ptas.bean.SxResource;
+import com.pengyue.ptas.bean.XtJS;
+import com.pengyue.ptas.bean.XtQuanXian;
+import com.pengyue.ptas.bean.XtUser;
+import com.pengyue.ptas.bean.YyGzryxxb;
+import com.pengyue.ptas.dao.yy.YyGzryxxbDao;
+import com.pengyue.ptas.service.yy.OrganizationService;
+import com.pengyue.ptas.service.yy.SxOrderService;
+import com.pengyue.ptas.service.yy.SxPlanService;
+import com.pengyue.ptas.service.yy.SxProjectService;
+import com.pengyue.ptas.service.yy.SxResourceService;
+import com.pengyue.ptas.service.xt.XtJSService;
+import com.pengyue.ptas.service.xt.XtQuanXianService;
+import com.pengyue.ptas.service.yy.YyGzryxxbService;
+import com.pengyue.ptas.util.PageInfo;
+import com.pengyue.ptas.util.ResultListInfo;
+import com.pengyue.ptas.util.UserIdAndParentId;
+@Controller
+@Scope("prototype")
+public class SxSlAction extends ActionSupport {
+	@Autowired
+	private SxResourceService sxResourceService;
+	@Autowired
+	private XtQuanXianService qxService;
+	@Autowired
+	private SxProjectService sxProjectService;
+	@Autowired
+	private OrganizationService organizationService;
+	@Autowired
+	private XtJSService xtJSService;
+	@Autowired
+	private SxOrderService sxOrderService;
+	//private Trani
+	private SxOrder sxOrder = new SxOrder();
+	private Integer start;
+	private Integer length;
+	private Integer draw;
+    
+   
+	
+	
+    
+	
+
+	
+
+	public SxOrder getSxOrder() {
+		return sxOrder;
+	}
+
+	public void setSxOrder(SxOrder sxOrder) {
+		this.sxOrder = sxOrder;
+	}
+
+	public Integer getDraw() {
+		return draw;
+	}
+
+	public void setDraw(Integer draw) {
+		this.draw = draw;
+	}
+
+	public Integer getStart() {
+		return start;
+	}
+
+	public void setStart(Integer start) {
+		this.start = start;
+	}
+
+	public Integer getLength() {
+		return length;
+	}
+
+	public void setLength(Integer length) {
+		this.length = length;
+	}
+
+	
+	
+
+
+
+	
+
+	
+
+	
+
+	/***
+	 * 进入实训计划列表页
+	 * @return
+	 */
+	public String index(){
+		try{
+			//获取上级菜单id
+			String id = ServletActionContext.getRequest().getParameter("id");
+			//查询出id下级登陆用户的权限
+			XtUser xtUser = (XtUser)ServletActionContext.getRequest().getSession().getAttribute("curUser");
+			List<XtQuanXian> qxs = qxService.selectByUserIdAndParentId(new UserIdAndParentId(xtUser.getId(),id));
+			ServletActionContext.getRequest().setAttribute("qxs",qxs);
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return "index";
+	}
+	
+	
+	/***
+	 * 异步获取列表数据
+	 */
+	public void getData(){
+		HttpServletResponse response = ServletActionContext.getResponse();
+		
+		response.setCharacterEncoding("UTF-8"); 
+		PrintWriter out = null;
+		try{
+			out = response.getWriter();
+			
+			ResultListInfo<SxOrder> result = sxOrderService.getList(new PageInfo<SxOrder>(sxOrder,start,length));
+			
+			JSONObject json = new JSONObject();
+			json.put("draw",draw);
+			json.put("recordsTotal",result.getTotal());
+			json.put("recordsFiltered",result.getTotal());
+			json.put("data",result.getResult());
+			out.print(json);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+	}
+	
+	
+	
+	/***
+	 * 异步插入数据
+	 */
+	public void insert(){
+		PrintWriter out = null;
+		try{
+			out = ServletActionContext.getResponse().getWriter();
+			int num = sxOrderService.insert(sxOrder);
+			out.print(num);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+	}
+	
+	/***
+	 * 受理
+	 */
+	public void acceptance(){
+		PrintWriter out = null;
+		try{
+			out = ServletActionContext.getResponse().getWriter();
+			sxOrder.setStatus(1);
+			int num = sxOrderService.update(sxOrder);
+			out.print(num);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+	}
+	
+	/***
+	 * 异步修改数据
+	 */
+	public void update(){
+		HttpServletResponse response = ServletActionContext.getResponse();
+		PrintWriter out = null;
+		try{
+			out = response.getWriter();
+			//int effectCount = yyGzryxxbService.update(yyGzryxxb);
+			//out.print(effectCount);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+	}
+	
+	
+	/***
+	 * 异步删除数据
+	 */
+	public void delete(){
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpServletResponse response = ServletActionContext.getResponse();
+		String str = request.getParameter("ids");
+		System.out.println(Arrays.asList(str.split(",")));
+		PrintWriter out = null;
+		try{
+			out = response.getWriter();
+			//int effectCount = yyGzryxxbService.delete(Arrays.asList(str.split(",")));
+			//out.print(effectCount);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+		
+	}
+	
+	/***
+	 * 异步获取实训项目名称
+	 */
+	public void getSxProjectName(){
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setCharacterEncoding("utf-8");
+		String id = request.getParameter("id");
+		PrintWriter out = null;
+		try{
+			SxProject result = sxProjectService.selectByPrimaryKey(id);
+			out = response.getWriter();
+			out.print(JSONObject.fromObject(result));
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+	}
+	
+	/***
+	 * 异步获取受训对象名称
+	 */
+	public void getSxdwName(){
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setCharacterEncoding("utf-8");
+		String id = request.getParameter("id");
+		PrintWriter out = null;
+		try{
+			Organization result = organizationService.selectByPrimaryKey(id);
+			out = response.getWriter();
+			out.print(JSONObject.fromObject(result));
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+	}
+	
+	
+	/***
+	 * 异步获取受训对象名称
+	 */
+	public void getSxdxName(){
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setCharacterEncoding("utf-8");
+		String id = request.getParameter("id");
+		PrintWriter out = null;
+		try{
+			Organization result = organizationService.selectByPrimaryKey(id);
+			out = response.getWriter();
+			out.print(JSONObject.fromObject(result));
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+	}
+	
+	
+	/***
+	 * 异步获取受训对象名称
+	 */
+	public void check(){
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setCharacterEncoding("utf-8");
+		PrintWriter out = null;
+		try{
+			out = response.getWriter();
+			int num = sxResourceService.check(request.getParameter("id"));
+			out.print(num);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+	}
+}

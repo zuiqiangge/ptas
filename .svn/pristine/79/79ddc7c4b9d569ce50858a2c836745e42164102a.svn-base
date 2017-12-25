@@ -1,0 +1,86 @@
+package com.pengyue.ptas.bean;
+
+
+public class SxPlan {
+	  private String id;
+	  private String time;
+	  private String name;
+	  private String keepTime;
+	  private String place;
+	  private String teacher;
+	  private String sxdwId;
+	  private String sxdxId;
+	  private String sxdwName;
+	  private String sxdxName;
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	
+	public String getTime() {
+		return time;
+	}
+	public void setTime(String time) {
+		this.time = time;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public String getKeepTime() {
+		return keepTime;
+	}
+	public void setKeepTime(String keepTime) {
+		this.keepTime = keepTime;
+	}
+	public String getPlace() {
+		return place;
+	}
+	public void setPlace(String place) {
+		this.place = place;
+	}
+	public String getTeacher() {
+		return teacher;
+	}
+	public void setTeacher(String teacher) {
+		this.teacher = teacher;
+	}
+	public String getSxdwId() {
+		return sxdwId;
+	}
+	public void setSxdwId(String sxdwId) {
+		this.sxdwId = sxdwId;
+	}
+	public String getSxdxId() {
+		return sxdxId;
+	}
+	public void setSxdxId(String sxdxId) {
+		this.sxdxId = sxdxId;
+	}
+	public String getSxdwName() {
+		return sxdwName;
+	}
+	public void setSxdwName(String sxdwName) {
+		this.sxdwName = sxdwName;
+	}
+	public String getSxdxName() {
+		return sxdxName;
+	}
+	public void setSxdxName(String sxdxName) {
+		this.sxdxName = sxdxName;
+	}
+	@Override
+	public String toString() {
+		return "SxPlan [id=" + id + ", time=" + time + ", name=" + name
+				+ ", keepTime=" + keepTime + ", place=" + place + ", teacher="
+				+ teacher + ", sxdwId=" + sxdwId + ", sxdxId=" + sxdxId
+				+ ", sxdwName=" + sxdwName + ", sxdxName=" + sxdxName + "]";
+	}
+	
+	  
+}

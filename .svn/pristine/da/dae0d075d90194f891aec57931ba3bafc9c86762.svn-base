@@ -1,0 +1,46 @@
+package com.pengyue.ptas.service.yy;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.pengyue.ptas.bean.Organization;
+import com.pengyue.ptas.bean.YyGzryxxb;
+import com.pengyue.ptas.dao.yy.OrganizationDao;
+import com.pengyue.ptas.util.PageInfo;
+import com.pengyue.ptas.util.ResultListInfo;
+
+@Service
+@Transactional
+public class OrganizationService {
+	@Autowired
+	OrganizationDao organizationDao;
+	public ResultListInfo<Organization> getList(PageInfo<Organization> pageInfo){
+		return organizationDao.getList(pageInfo);
+	}
+	
+	public int  insert(Organization bean){
+		return organizationDao.insert(bean);
+	}
+	
+	public int  update(Organization bean){
+		return organizationDao.update(bean);
+	}
+	
+	public int  delete(List<String> ids){
+		return organizationDao.delete(ids);
+	}
+	
+
+	public Organization selectByPrimaryKey(String id){
+		return organizationDao.selectByPrimaryKey(id);
+	}
+	
+	public List<Map<String,Object>> getOrganization(){
+		return organizationDao.getOrganization();
+	}
+	
+}

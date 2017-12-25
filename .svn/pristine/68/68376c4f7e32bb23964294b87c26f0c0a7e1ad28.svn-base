@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengyue.ptas.dao.xt.XtUserDao">
+  <resultMap id="BaseResultMap" type="com.pengyue.ptas.bean.XtUser">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="LOGINID" jdbcType="VARCHAR" property="loginid" />
+    <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
+    <result column="USERNAME" jdbcType="VARCHAR" property="username" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, LOGINID, PASSWORD, USERNAME
+  </sql>
+  
+  <!--根据主键查找对象-->
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_XT_USER
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <!--根据属性查找对象-->
+  <select id="selectByEntity" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_XT_USER
+    where 1=1 
+      <if test="id != null">
+         and id = #{id,jdbcType=VARCHAR}
+      </if>
+      <if test="loginid != null">
+        and loginid =#{loginid,jdbcType=VARCHAR}
+      </if>
+      <if test="password != null">
+        and password = #{password,jdbcType=VARCHAR}
+      </if>
+      <if test="username != null">
+        and username = #{username,jdbcType=VARCHAR}
+      </if>
+   
+  </select>
+  
+  
+  <!--根据主键删除对象-->
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from TB_XT_USER
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  
+   <!--批量删除-->
+  <delete id="deleteByIds" parameterType="java.util.List" >
+  	delete from TB_XT_USER
+    where ID in
+  	<foreach collection="list" item="id" separator="," open="(" close=")">
+  		#{id,jdbcType=VARCHAR}
+  	</foreach>
+  </delete>
+  
+  <!--插入记录 -->
+  <insert id="insert" parameterType="com.pengyue.ptas.bean.XtUser">
+    insert into TB_XT_USER (ID, LOGINID, PASSWORD, 
+      USERNAME)
+    values (sys_guid(), #{loginid,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{username,jdbcType=VARCHAR})
+  </insert>
+  
+  
+  <insert id="insertSelective" parameterType="com.pengyue.ptas.bean.XtUser">
+    insert into TB_XT_USER
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="loginid != null">
+        LOGINID,
+      </if>
+      <if test="password != null">
+        PASSWORD,
+      </if>
+      <if test="username != null">
+        USERNAME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="loginid != null">
+        #{loginid,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pengyue.ptas.bean.XtUser">
+    update TB_XT_USER
+    <set>
+      <if test="loginid != null">
+        LOGINID = #{loginid,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        PASSWORD = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        USERNAME = #{username,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.pengyue.ptas.bean.XtUser">
+    update TB_XT_USER
+    set LOGINID = #{loginid,jdbcType=VARCHAR},
+      PASSWORD = #{password,jdbcType=VARCHAR},
+      USERNAME = #{username,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!--条件分页查询-->
+  <sql id="query_condition">
+  	 select t.*
+    ,rownum rownu 
+    from TB_XT_USER t where 1=1
+  	 <if test="entity.id != null">
+        #{entity.id,jdbcType=VARCHAR},
+      </if>
+      <if test="entity.loginid != null">
+        #{entity.loginid,jdbcType=VARCHAR},
+      </if>
+      <if test="entity.password != null">
+        #{entity.password,jdbcType=VARCHAR},
+      </if>
+      <if test="entity.username != null">
+        #{entity.username,jdbcType=VARCHAR},
+      </if>
+  </sql>
+  <select id="getList" parameterType="com.pengyue.ptas.util.PageInfo" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from (
+    <include refid="query_condition" />
+    and rownum &lt;= #{end}) t
+    where t.rownu &gt;=#{begin}
+  </select>
+  
+  
+  <!--获取条件查询总条数-->
+  <select id="getCount" parameterType="com.pengyue.ptas.bean.XtUser" resultType="Integer">
+    select 
+   		count(*)
+    from TB_XT_USER where 1=1
+   <if test="entity.id != null">
+        #{entity.id,jdbcType=VARCHAR},
+      </if>
+      <if test="entity.loginid != null">
+        #{entity.loginid,jdbcType=VARCHAR},
+      </if>
+      <if test="entity.password != null">
+        #{entity.password,jdbcType=VARCHAR},
+      </if>
+      <if test="entity.username != null">
+        #{entity.username,jdbcType=VARCHAR},
+      </if>
+  </select>
+</mapper>

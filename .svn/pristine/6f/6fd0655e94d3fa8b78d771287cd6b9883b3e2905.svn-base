@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengyue.ptas.dao.xt.XtJsQxDao">
+
+  <resultMap id="BaseResultMap" type="com.pengyue.ptas.bean.XtJsQx">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="JS_id" jdbcType="VARCHAR" property="jsId" />
+    <result column="qx_id" jdbcType="VARCHAR" property="qxId" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    ID,js_id,qx_id
+  </sql>
+  <!--根据主键获取 -->
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_xt_jsxx_qxxx
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  
+  <!--根据属性获取 -->
+  <select id="selectByProperty" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_xt_jsxx_qxxx
+    where 1=1
+     <if test="id != null">
+        and id = #{id,jdbcType=VARCHAR}
+      </if>
+      <if test="jsId != null">
+        and js_id = #{jsId,jdbcType=VARCHAR}
+      </if>
+      <if test="qxId != null">
+        and qx_id = #{qxId,jdbcType=VARCHAR}
+      </if>
+  </select>
+  
+  <!--根据主键删除-->
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_xt_jsxx_qxxx
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <!--删除某个角色的配置-->
+  <delete id="deleteByJsId" parameterType="java.lang.String">
+    delete from tb_xt_jsxx_qxxx
+    where js_id = #{jsId,jdbcType=VARCHAR}
+  </delete>
+  
+  <!--普通插入数据-->
+  <insert id="insert" parameterType="com.pengyue.ptas.bean.XtJsQx">
+    insert into tb_xt_jsxx_qxxx (id, JS_id,qx_id)
+    values (sys_guid(), #{jsId,jdbcType=VARCHAR},#{qxId,jdbcType=VARCHAR})
+  </insert>
+  
+  <!--选择性插入数据-->
+  <insert id="insertSelective" parameterType="com.pengyue.ptas.bean.XtJsQx">
+    insert into tb_xt_jsxx_qxxx
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="jsId != null">
+        JS_id,
+      </if>
+       <if test="qxId != null">
+        qx_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="jsId != null">
+        #{jsId,jdbcType=VARCHAR},
+      </if>
+      <if test="qxId != null">
+        #{qxId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <!--选择性修改-->
+  <update id="updateByPrimaryKeySelective" parameterType="com.pengyue.ptas.bean.XtJsQx">
+    update tb_xt_jsxx_qxxx
+    <set>
+      <if test="jsId != null">
+        Js_id = #{jsId,jdbcType=VARCHAR},
+      </if>
+       <if test="qxId != null">
+        qx_id = #{qxId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!--普通修改-->
+  <update id="updateByPrimaryKey" parameterType="com.pengyue.ptas.bean.XtJsQx">
+    update tb_xt_jsxx_qxxx
+    set JSMC = #{jsmc,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+  
+</mapper>

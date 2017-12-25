@@ -1,0 +1,164 @@
+package com.pengyue.ptas.action.xt;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
+import com.opensymphony.xwork2.ActionSupport;
+import com.pengyue.ptas.bean.Tree;
+import com.pengyue.ptas.bean.XtJS;
+import com.pengyue.ptas.bean.XtJSAndUser;
+import com.pengyue.ptas.bean.XtJsQx;
+import com.pengyue.ptas.bean.XtQuanXian;
+import com.pengyue.ptas.service.xt.XtJSService;
+import com.pengyue.ptas.service.xt.XtJsQxService;
+import com.pengyue.ptas.service.xt.XtQuanXianService;
+@Controller
+@Scope("prototype")
+public class XtQxAction extends ActionSupport{
+	@Autowired
+	private XtQuanXianService xqService;
+	@Autowired
+	private XtJSService xtJSService;
+	@Autowired
+	private XtJsQxService xtJsQxService;
+	/***
+	 * 跳转权限管理页面
+	 * @return
+	 */
+	public String list(){
+		ServletActionContext.getRequest().setAttribute("jss", xtJSService.selectAll());
+		return "list";
+	}
+	
+	
+	/***
+	 * 异步获取权限
+	 */
+	public void getQxList(){
+		//主菜单
+		JSONArray result = new JSONArray();
+		PrintWriter out = null;
+		try{
+			String id = ServletActionContext.getRequest().getParameter("id");
+			String jsId = ServletActionContext.getRequest().getParameter("jsId");
+			List<XtQuanXian> selectedMenu = xqService.selectByRoleId(jsId);
+			HttpServletResponse response = ServletActionContext.getResponse();
+			response.setCharacterEncoding("utf-8");
+			out = response.getWriter();
+			JSONArray reult = null;
+			reult = setBean(xqService.selectAll(),selectedMenu);
+			/*if(null==id)
+				reult = setBean(xqService.selectByFirstMenu(),selectedMenu);
+			else
+				reult = setBean(xqService.selectByParentId(id),selectedMenu);*/
+			out.print(reult);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+	}
+	
+	/***
+	 * 设置权限
+	 */
+	public void setQx(){
+		PrintWriter out = null;
+		try {
+			//选择的权限节点的id
+			List<String> ids = Arrays.asList(ServletActionContext.getRequest().getParameter("ids").split(","));
+			//选择的角色id
+			String jsId = ServletActionContext.getRequest().getParameter("jsid");
+			//删除所有配置
+			xtJsQxService.deleteByJsId(jsId);
+			int effectNum = 0;
+			for(String id:ids){
+				XtJsQx x = new XtJsQx();
+				x.setJsId(jsId);
+				x.setQxId(id);
+				effectNum+=xtJsQxService.insert(x);
+			}
+			
+			out = ServletActionContext.getResponse().getWriter();
+			out.print(effectNum);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+	}
+	
+	public List<Tree> setBean1(List<XtQuanXian> qxs){
+		List<Tree> list = new ArrayList<Tree>();
+		for(XtQuanXian qx:qxs){
+			Tree tree = new Tree();
+			tree.setId(qx.getId());
+			tree.setName(qx.getQxmc());
+			
+			List<XtQuanXian> selectedMenu = xqService.selectByRoleId(ServletActionContext.getRequest().getParameter("jsId"));
+			for(XtQuanXian qxed:selectedMenu){
+				if(qx.getId().equals(qxed.getId())&&!(qx.getLevels().equals("1")))
+					tree.setOpen(false);
+			}
+			tree.setParent(true);
+			tree.setPid(qx.getParentId()==null?"0":qx.getParentId());
+			list.add(tree);	
+		}
+		return list;
+	}
+	
+	
+	
+	
+	public JSONArray setBean(List<XtQuanXian> qxs,List<XtQuanXian> selectedMenu){
+		JSONArray list = new JSONArray();
+		for(XtQuanXian qx:qxs){
+			Map<Object,Object> map =new HashMap<Object,Object>();
+			JSONObject obj = new JSONObject();
+			obj.put("id", qx.getId());
+			obj.put("name", qx.getQxmc());
+			
+			for(XtQuanXian qxed:selectedMenu){
+				if(qx.getId().equals(qxed.getId()))
+					obj.put("checked",true);
+			}
+			
+			
+			obj.put("pId", qx.getParentId()==null?"0":qx.getParentId());
+			List<XtQuanXian> result = xqService.selectByParentId(qx.getId());
+			if(result.size()>0){
+				obj.put("isParent",true);
+				obj.put("open", true);
+			}else{
+				obj.put("isParent", false);
+				obj.put("open", false);
+			}
+			
+			list.add(obj);	
+		}
+		
+		
+		
+		return list;
+	}
+	
+}

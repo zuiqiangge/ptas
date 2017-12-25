@@ -1,0 +1,77 @@
+package com.pengyue.ptas.service.xt;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.pengyue.ptas.bean.Dictionary;
+import com.pengyue.ptas.bean.DictionaryValue;
+import com.pengyue.ptas.bean.XtJSAndUser;
+import com.pengyue.ptas.bean.XtJsQx;
+import com.pengyue.ptas.dao.xt.DictionaryDao;
+import com.pengyue.ptas.dao.xt.XtJsQxDao;
+import com.pengyue.ptas.util.TypecodeAndValue;
+@Service("weiHuService")
+@Transactional
+public class WeiHuServiceImpl implements WeiHuService {
+	@Autowired
+	private DictionaryDao dataWHDao;
+
+	@Override
+	public int insertDic(Dictionary dic) {
+		return dataWHDao.insertDic(dic);
+	}
+
+	@Override
+	public int insertValue(DictionaryValue dicValue) {
+		return dataWHDao.insertValue(dicValue);
+	}
+
+	@Override
+	public int updateDic(Dictionary dic) {
+		return dataWHDao.updateDic(dic);
+	}
+
+	@Override
+	public int updateValue(DictionaryValue dicValue) {
+		return dataWHDao.updateValue(dicValue);
+	}
+
+	@Override
+	public int deleteDic(List<String> ids) {
+		return dataWHDao.deleteDic(ids);
+	}
+
+	@Override
+	public int deleteValue(List<String> ids) {
+		return dataWHDao.deleteValue(ids);
+	}
+
+	@Override
+	public List<Dictionary> getAll() {
+		return dataWHDao.getAll();
+	}
+
+	@Override
+	public List<DictionaryValue> selectValueByDicId(String dicId) {
+		return dataWHDao.selectValueByDicId(dicId);
+	}
+
+	@Override
+	public List<DictionaryValue> getAllValuesByCode(String typeCode) {
+		return dataWHDao.getAllValuesByCode(typeCode);
+	}
+
+	@Override
+	public DictionaryValue getValuesByCodeAndValue(TypecodeAndValue tav) {
+		return dataWHDao.getValuesByCodeAndValue(tav);
+	}
+
+
+	
+
+	
+}

@@ -1,0 +1,192 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"
+	isELIgnored="false"%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" href="<%=basePath%>common/css/sapar.css" />
+<link rel="stylesheet" type="text/css" href="<%=basePath%>common/css/common.css" />
+<link rel="stylesheet" type="text/css" href="<%=basePath%>sta/personal/css/personal_list.css" />
+<link rel="stylesheet" type="text/css" href="<%=basePath%>sta/personal/css/user.css" />
+<link href="<%=basePath%>common/js/DataTables-1.10.15/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="<%=basePath%>jquery-easyui-1.5.3/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="<%=basePath%>jquery-easyui-1.5.3/themes/icon.css">
+<link rel="stylesheet" href="zTree_v3-master/css/zTreeStyle/zTreeStyle.css" type="text/css">
+
+<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+<link rel="stylesheet" href="<%=basePath%>bootstrap-3.3.7-dist/css/bootstrap.min.css" type="text/css">
+
+<!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+<link rel="stylesheet" href="<%=basePath%>bootstrap-3.3.7-dist/css/bootstrap-theme.min.css" type="text/css">
+
+
+<title>系统权限管理</title>
+</head>
+
+<body>
+
+ <div id="saper-container">
+        <div id="saper-hd"></div>
+        <div id="saper-bd">
+            <div class="subfiled clearfix">
+                <h2>系统权限管理</h2>
+            </div>
+         </div>
+         <form class="form-inline" role="form">
+          <div class="form-group">
+          	<button type="button" class="btn btn-primary btn-lg" onclick="getChecked()">赋权</button>
+          		 <select class="form-control" onchange="aa()" id="js">
+        	 <s:iterator var="js" value="#request.jss" status="statu">
+				<option value="${js.id}">${js.jsmc}</option>
+			</s:iterator>
+    		</select>
+    		
+  		</div>
+       </form>
+      <%--   <select class="easyui-combobox" name="state" style="width:30%" id="aa"
+         	data-options="
+				url:'xtJs_getJsData',
+				method:'get',
+				valueField:'id',
+				textField:'text',
+				panelHeight:'auto'
+			"
+         ></select> --%>
+         <!-- <div class="easyui-panel" style="padding:5px">
+         <ul id="tt" class="easyui-tree" url="xtQx_getQxList"></ul>
+	</div> -->
+   
+ <div class="zTreeDemoBackground left">
+   <ul id="treeDemo" class="ztree"></ul>
+</div>
+   
+  
+   
+   
+	
+</body>
+
+
+<script type="text/javascript" src="<%=basePath%>common/js/jquery.js"></script>
+<script type="text/javascript" src="<%=basePath%>common/js/sapar.js"></script>
+<script type="text/javascript" src="<%=basePath%>common/js/WdatePicker.js"></script>
+<%-- <script type="text/javascript" src="<%=basePath%>sta/personal/js/personal_list.js"></script> --%>
+<script type="text/javascript" src="<%=basePath%>common/js/DataTables-1.10.15/media/js/jquery.dataTables.min.js"></script>
+<script src="<%=basePath%>bootstrap-3.3.7-dist/js/bootstrap.min.js" type="text/javascript"></script>
+<SCRIPT src="<%=basePath%>layer/layer.js"></SCRIPT>
+<script type="text/javascript" src="<%=basePath%>jquery-easyui-1.5.3/jquery.min.js"></script>
+<script type="text/javascript" src="<%=basePath%>jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="<%=basePath%>zTree_v3-master/js/jquery.ztree.core.js"></script>
+<script type="text/javascript" src="<%=basePath%>zTree_v3-master/js/jquery.ztree.excheck.js"></script>
+<script type="text/javascript">
+
+var setting = {
+		check: {
+			enable: true,
+			chkboxType: {"Y" : "p", "N" : "p"}
+		},
+		data: { 
+			simpleData: { 
+			enable: true 
+			} 
+		}/*  ,
+		async: {
+			enable: true,
+			url: "xtQx_getQxList",
+			autoParam: ["id"],
+			otherParam: ["jsId",$("#js").val()]
+		} */
+	};
+var zNodes;
+/* 	 var zNodes =[
+		{ id:1, pId:0, name:"随意勾选 1", open:true},
+		{ id:11, pId:1, name:"随意勾选 1-1", open:true},
+		{ id:111, pId:11, name:"随意勾选 1-1-1"},
+		{ id:112, pId:11, name:"随意勾选 1-1-2"},
+		{ id:12, pId:1, name:"随意勾选 1-2", open:true},
+		{ id:121, pId:12, name:"随意勾选 1-2-1"},
+		{ id:122, pId:12, name:"随意勾选 1-2-2"},
+		{ id:2, pId:0, name:"随意勾选 2", checked:true, open:true},
+		{ id:21, pId:2, name:"随意勾选 2-1"},
+		{ id:22, pId:2, name:"随意勾选 2-2", open:true},
+		{ id:221, pId:22, name:"随意勾选 2-2-1", checked:true},
+		{ id:222, pId:22, name:"随意勾选 2-2-2"},
+		{ id:23, pId:2, name:"随意勾选 2-3"}
+	]; */
+	
+	/*  var zNodes =[
+		{id:1,name:"人员管理",pId:0},
+		{id:11,name:"工作人员管理",pId:1},
+		{id:111,name:"添加",pId:11},
+		{id:112,name:"编辑",pId:11},
+		{id:113,name:"删除",pId:11}
+		]; */
+	var tree;
+	
+	
+	$(document).ready(function(){
+		tree = $.fn.zTree.init($("#treeDemo"), setting,ajaxGetTree());
+	});
+
+//异步加载树数据
+function ajaxGetTree(){
+	var nodes;
+	$.ajax({
+		  type: "POST",
+		  url: "xtQx_getQxList",
+		  data:"jsId="+$("#js").val(),
+		  async:false,
+		  dataType: "json",
+		  success: function(msg){
+			 nodes = msg;
+		}
+	});
+	return nodes;
+}
+function aa(){
+	tree = $.fn.zTree.init($("#treeDemo"),setting,ajaxGetTree());
+}
+
+function getChecked(){
+	var nodes = tree.getCheckedNodes(true);
+	var ids=[];
+	for(var i=0;i<nodes.length;i++){
+		ids.push(nodes[i].id);
+	}
+	$.ajax({
+		  type: "POST",
+		  url: "xtQx_setQx",
+		  data:"ids="+ids+"&jsid="+$("#js").val(),
+		  success: function(msg){
+			  alert(msg);
+		}
+	});
+}
+
+//加载树
+function tree(){
+	tree = $.fn.zTree.init($("#treeDemo"),setting,ajaxGetTree());
+}
+
+//如果是管理员,禁用所有勾选
+function disableCheck(){
+	var nodes = tree.getNodes;
+	for (var i=0, l=nodes.length; i < l; i++) {
+		tree.setChkDisabled(nodes[i], true);
+	}
+}
+
+
+</script>
+</html>

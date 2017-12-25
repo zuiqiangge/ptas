@@ -1,0 +1,20 @@
+package com.pengyue.ptas.dao.yy;
+
+import java.util.List;
+
+import com.pengyue.ptas.bean.SxPlan;
+import com.pengyue.ptas.bean.YyGzryxxb;
+import com.pengyue.ptas.util.PageInfo;
+import com.pengyue.ptas.util.ResultListInfo;
+
+public interface SxPlanDao {
+	public ResultListInfo<SxPlan> getList(PageInfo<SxPlan> pageInfo);
+	
+	public ResultListInfo<SxPlan> getSXList(PageInfo<SxPlan> pageInfo);
+	
+	int insert(SxPlan sxPlan);
+	public int update(SxPlan record);
+	int delete(List<String> list);
+	
+	public List<SxPlan> selectAll();
+}

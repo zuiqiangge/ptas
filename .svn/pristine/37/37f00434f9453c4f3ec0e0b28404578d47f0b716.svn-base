@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pengyue.ptas.dao.yy.MaintenanceLogDaoImpl" >
+  <resultMap id="BaseResultMap" type="com.pengyue.ptas.bean.MaintenanceLog" >
+    <id column="ml_id" property="ml_id"  />
+    <result column="ml_mid" property="ml_mid"  />
+    <result column="ml_name" property="ml_name"  />
+    <result column="ml_card" property="ml_card"  />
+    <result column="ml_caozuo" property="ml_caozuo" />
+    <result column="ml_ip" property="ml_ip" />
+    <result column="ml_url" property="ml_url"  />
+    <result column="ml_time" property="ml_time"  />
+  </resultMap>
+ <!--  -->
+	<insert id="insert" parameterType="com.pengyue.ptas.bean.MaintenanceLog">
+		insert into TB_MAINTENANCE_LOG 
+			(ml_mid,ml_name,ml_card,ml_caozuo,ml_ip,ml_url,ml_time)
+		values
+			(#{ml_mid},#{ml_name},#{ml_card},#{ml_caozuo},#{ml_ip},#{ml_url},#{ml_time})
+	</insert>
+	
+	<delete id="delete" parameterType="java.util.List" >
+		delete from TB_MAINTENANCE_LOG  where ml_id in
+		<foreach collection="list" item="ml_id" separator="," open="(" close=")">
+		 	#{ml_id}
+		</foreach>
+	</delete>
+	
+	<update id="update" parameterType="com.pengyue.ptas.bean.MaintenanceLog">
+		update TB_MAINTENANCE_LOG set 
+			m_card = #{ml_card},
+			ml_caozuo = #{ml_caozuo},
+			ml_ip = #{ml_ip},
+			ml_url = #{ml_url},
+			ml_time = #{ml_time}
+		where ml_id = #{ml_id}
+	</update>
+	
+	<select id="selectByPrimaryKey" parameterType="map" resultMap="BaseResultMap">
+		select * from TB_MAINTENANCE_LOG where ml_id = #{ml_id}
+	</select> 
+	
+	<select id="selectAll" resultMap="BaseResultMap">
+		select * from TB_MAINTENANCE_LOG 
+	</select>
+	
+	<select id="selectList" parameterType="com.pengyue.ptas.bean.MaintenanceLog" resultMap="BaseResultMap">
+		select * from (
+			SELECT A.*, ROWNUM RN from
+				(select * from TB_MAINTENANCE_LOG 
+					where 1=1
+					<if test="entity.ml_name !=null ">
+					and ml_name like #{entity.ml_name}
+					</if>
+					<if test="entity.ml_card !=null ">
+					and ml_card like #{entity.ml_card}
+					</if>
+					order by ml_time desc
+				) A
+		)	
+		WHERE RN BETWEEN #{begin} AND #{end}  
+    	
+	</select>
+	
+	<select id="selectCount" parameterType="com.pengyue.ptas.bean.MaintenanceLog" resultType="java.lang.Integer">
+		select count(*) as count from TB_MAINTENANCE_LOG
+		where 1=1
+		<if test="entity.ml_name !=null ">
+		and ml_name like #{entity.ml_name}
+		</if>
+		<if test="entity.ml_card !=null ">
+		and ml_card like #{entity.ml_card}
+		</if>
+	</select>
+	
+</mapper>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pengyue.ptas.dao.yy.TrainedDaoImpl" >
+  <resultMap id="BaseResultMap" type="com.pengyue.ptas.bean.Trained" >
+    <id column="t_id" property="t_id"  />
+    <result column="t_name" property="t_name"  />
+    <result column="t_sex" property="t_sex"  />
+    <result column="t_card" property="t_card"  />
+    <result column="t_enter" property="t_enter" />
+    <result column="t_identity" property="t_identity" />
+    <result column="t_compile" property="t_compile"  />
+    <result column="t_status" property="t_status"  />
+    <result column="t_call" property="t_call"  />
+    <result column="t_oid" property="t_oid"  />
+    <result column="t_time" property="t_time"  />
+    <result column="o_name" property="o_name"  />
+  </resultMap>
+ <!--  -->
+	<insert id="insert" parameterType="com.pengyue.ptas.bean.Trained">
+		insert into tb_training_object
+		(t_name,t_sex,t_card,t_enter,t_identity,t_compile,t_status,t_oid,t_time)
+		values(#{t_name},#{t_sex},#{t_card},#{t_enter},#{t_identity},#{t_compile},#{t_status},#{t_oid},#{t_time})
+	</insert>
+	
+	<delete id="delete" parameterType="java.util.List" >
+		delete from tb_training_object where t_id in
+		<foreach collection="list" item="t_id" separator="," open="(" close=")">
+		 	#{t_id}
+		</foreach>
+	</delete>
+	
+	<update id="update" parameterType="com.pengyue.ptas.bean.Trained">
+		update tb_training_object  set 
+			t_name = #{t_name},
+			t_sex = #{t_sex},
+			t_card = #{t_card},
+			t_enter = #{t_enter},
+			t_identity = #{t_identity},
+			t_compile = #{t_compile},
+			t_status = #{t_status},
+			t_oid = #{t_oid},
+			t_time = #{t_time}
+		where t_id = #{t_id}
+	</update>
+	
+	<select id="select" parameterType="map" resultMap="BaseResultMap">
+		select * from tb_training_object  where t_id = #{t_id}
+	</select>
+	
+	<select id="selectList" parameterType="com.pengyue.ptas.bean.Trained" resultMap="BaseResultMap">
+		select * from (
+			SELECT A.*, ROWNUM RN from
+				(select t.*,o.o_name  as o_name from 
+					tb_training_object t inner join  tb_organization o 
+					on t.t_oid = o.o_id 
+					where 1 = 1
+					<if test="entity.o_name != null">
+						and o.o_name like #{entity.o_name}
+					</if>
+					<if test="entity.t_name != null">
+						and t.t_name like #{entity.t_name}
+					</if>
+					order by t_time desc
+				) A
+		)	
+		WHERE RN BETWEEN #{begin} AND #{end}  
+    	
+	</select>
+	
+	<select id="selectCount" parameterType="map" resultType="java.lang.Integer">
+		select count(*) as count from tb_training_object
+		where 1=1
+	</select>
+	
+</mapper>

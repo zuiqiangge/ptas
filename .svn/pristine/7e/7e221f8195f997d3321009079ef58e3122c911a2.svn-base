@@ -1,0 +1,60 @@
+package com.pengyue.ptas.action.xt;
+
+import java.io.PrintWriter;
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
+import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.ModelDriven;
+import com.pengyue.ptas.bean.XtJS;
+import com.pengyue.ptas.bean.XtJSAndUser;
+import com.pengyue.ptas.bean.XtJsQx;
+import com.pengyue.ptas.bean.XtQuanXian;
+import com.pengyue.ptas.bean.XtUser;
+import com.pengyue.ptas.service.xt.XtJSAndUserService;
+import com.pengyue.ptas.service.xt.XtJSService;
+import com.pengyue.ptas.service.xt.XtJsQxService;
+import com.pengyue.ptas.service.xt.XtQuanXianService;
+import com.pengyue.ptas.service.xt.XtUserService;
+
+@Controller
+@Scope("prototype")
+public class WeiHuAction extends ActionSupport{
+	@Autowired
+	private XtUserService xtUserService;
+	@Autowired
+	private XtJSAndUserService xtJSAndUserService;
+	@Autowired
+	private XtJsQxService xtJsQxService;
+	@Autowired
+	private XtQuanXianService xtQuanXianService;
+	@Autowired
+	private XtJSService xtJSService;
+	private XtUser xtUser;
+	public XtUser getXtUser() {
+		return xtUser;
+	}
+	public void setXtUser(XtUser xtUser) {
+		this.xtUser = xtUser;
+	}
+	
+	/***
+	 * 跳转导出页面
+	 */
+	public String index(){
+		return "list";
+	}
+	
+	
+	
+	
+	
+	
+}

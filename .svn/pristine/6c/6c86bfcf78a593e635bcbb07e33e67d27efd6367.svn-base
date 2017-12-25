@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengyue.ptas.dao.xt.XtJSDao">
+  <resultMap id="BaseResultMap" type="com.pengyue.ptas.bean.XtJS">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="JSMC" jdbcType="VARCHAR" property="jsmc" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, JSMC
+  </sql>
+  
+  <!--根据主键查找-->
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_XT_JSXX
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <!--查询某个用户的角色-->
+  <select id="selectByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_xt_jsxx js where js.id in (
+       select jsid from tb_xt_jsxx_user jsUser where jsUser.Userid = #{userId,jdbcType=VARCHAR}
+	)
+  </select>
+  
+   <!--全部-->
+  <select id="selectAll" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_XT_JSXX
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from TB_XT_JSXX
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.pengyue.ptas.bean.XtJS">
+    insert into TB_XT_JSXX (ID, JSMC)
+    values (#{id,jdbcType=VARCHAR}, #{jsmc,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.pengyue.ptas.bean.XtJS">
+    insert into TB_XT_JSXX
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="jsmc != null">
+        JSMC,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="jsmc != null">
+        #{jsmc,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pengyue.ptas.bean.XtJS">
+    update TB_XT_JSXX
+    <set>
+      <if test="jsmc != null">
+        JSMC = #{jsmc,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pengyue.ptas.bean.XtJS">
+    update TB_XT_JSXX
+    set JSMC = #{jsmc,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+
+  
+</mapper>

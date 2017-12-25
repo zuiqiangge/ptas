@@ -1,0 +1,205 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"
+	isELIgnored="false"%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link rel="stylesheet" href="<%=basePath%>common/css/sapar.css" />
+	<link rel="stylesheet" type="text/css"
+		href="<%=basePath%>common/css/common.css" />
+	<link rel="stylesheet" type="text/css"
+		href="<%=basePath%>sta/personal/css/personal_list.css" />
+	<link rel="stylesheet" type="text/css"
+		href="<%=basePath%>sta/personal/css/user.css" />
+	<link
+		href="<%=basePath%>common/js/DataTables-1.10.15/media/css/jquery.dataTables.min.css"
+		rel="stylesheet" type="text/css">
+
+
+		<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+		<link rel="stylesheet"
+			href="<%=basePath%>bootstrap-3.3.7-dist/css/bootstrap.min.css"
+			type="text/css">
+
+			<!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+			<link rel="stylesheet"
+				href="<%=basePath%>bootstrap-3.3.7-dist/css/bootstrap-theme.min.css"
+				type="text/css">
+
+
+				<title>统计分析</title>
+</head>
+
+<body data-spy="scroll" data-target="#myScrollspy">
+
+	<div id="saper-container">
+		<div id="saper-hd"></div>
+		<div id="saper-bd">
+			<div class="subfiled clearfix">
+				<h2>统计分析</h2>
+			</div>
+		</div>
+	</div>
+	<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+	<div id="bar" style="width: 600px;height:400px;"></div>
+	<div id="pie" style="width: 600px;height:400px;"></div>
+	<div id="main" style="width: 600px;height:400px;"></div>
+	
+	<script type="text/javascript">
+		
+	</script>
+</body>
+
+
+<script type="text/javascript" src="<%=basePath%>common/js/jquery.js"></script>
+<script type="text/javascript" src="<%=basePath%>common/js/sapar.js"></script>
+<script type="text/javascript"
+	src="<%=basePath%>common/js/echarts.min.js"></script>
+<script type="text/javascript"
+	src="<%=basePath%>common/js/WdatePicker.js"></script>
+<script type="text/javascript"
+	src="<%=basePath%>sta/comprehensiveApp/js/warning.js">
+	
+</script>
+<script type="text/javascript"
+	src="<%=basePath%>common/js/DataTables-1.10.15/media/js/jquery.dataTables.min.js"></script>
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="<%=basePath%>bootstrap-3.3.7-dist/js/bootstrap.min.js"
+	type="text/javascript"></script>
+<SCRIPT src="<%=basePath%>layer/layer.js"></SCRIPT>
+<script type="text/javascript">
+function getsxDx(){
+	var data ;
+	$.ajax(
+			{ 
+				url: "user_getAllDx", 
+				type:"GET",
+				dataType:"json",
+				async:false,
+				success: function(msg){
+					data = msg.length;
+				}
+	});
+	return data;
+}
+
+function getsxDw(){
+	var data = 0;
+	$.ajax(
+			{ 
+				url: "user_getAllDw", 
+				type:"GET",
+				dataType:"json",
+				async:false,
+				success: function(msg){
+					data = msg.length;
+				}
+		});
+	return data;
+}
+
+function getsxPlan(){
+	var data;
+	$.ajax(
+			{ 
+				url: "sxPlan_getAllSxPlan", 
+				type:"GET",
+				dataType:"json",
+				async:false,
+				success: function(msg){
+					data = msg.length;
+				}
+		});
+	return data;
+}
+//alert(getsxDw());
+
+		//柱状图
+		var bar = echarts.init(document.getElementById('bar'));
+
+		// 指定图表的配置项和数据
+		var option = {
+			title : {
+				text :'柱状图显示'
+			},
+			tooltip : {},
+			legend : {
+				data : [ '销量' ]
+			},
+			xAxis : {
+				data : [ "受训对象", "受训组织", "讲解员", "实训内容"]
+			},
+			yAxis : {},
+			series : [ {
+				name : '销量',
+				type : 'bar',
+				data : [ getsxDx(),getsxDw(), 36,getsxPlan()]
+			} ]
+		};
+
+		
+		
+		// 使用刚指定的配置项和数据显示图表。
+		bar.setOption(option);
+		
+		//---------------------------------------------------------------------------
+		
+		//饼图
+		var pie = echarts.init(document.getElementById('pie'));
+		option1 = {
+			    title: {
+			        text: '天气情况统计',
+			        subtext: '虚构数据',
+			        left: 'center'
+			    },
+			    tooltip : {
+			        trigger: 'item',
+			        formatter: "{a} <br/>{b} : {c} ({d}%)"
+			    },
+			    legend: {
+			        // orient: 'vertical',
+			        // top: 'middle',
+			        bottom: 10,
+			        left: 'center',
+			        data: ['受训对象', '受训单位','实训计划','讲解员']
+			    },
+			    series : [
+			        {
+			            type: 'pie',
+			            radius : '65%',
+			            center: ['50%', '50%'],
+			            selectedMode: 'single',
+			            data:[
+			                {
+			                    value:getsxDx(),
+			                    name: '受训对象'
+			                   
+			                },
+			                {value:getsxDw(), name: '受训单位'},
+			                {value:getsxPlan(), name: '实训计划'},
+			                {value:22, name: '讲解员'}
+			            ],
+			            itemStyle: {
+			                emphasis: {
+			                    shadowBlur: 10,
+			                    shadowOffsetX: 0,
+			                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+			                }
+			            }
+			        }
+			    ]
+			};
+		pie.setOption(option1);
+	</script>
+</html>

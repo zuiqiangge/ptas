@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+    
+
+<package name="interceptorAll" extends="struts-default">
+		
+		<!-- 默认拦截器 -->
+		<!-- <default-interceptor-ref name="mydefault" /> -->
+		
+	</package>
+	
+	<!--登陆-->
+	<package name="login" namespace="/" extends="struts-default">
+		<action name="login_*" class="com.pengyue.ptas.action.xt.LoginAction" method="{1}">
+			<result name="login">/login.jsp</result>
+		</action>
+	</package>
+	
+	<!--首页-->
+	<package name="index" namespace="/" extends="struts-default">
+		<action name="index_*" class="com.pengyue.ptas.action.xt.IndexAction" method="{1}">
+			<result name="index">/index.jsp</result>
+		</action>
+	</package>
+	
+	<!--系统管理-->
+	<package name="system" namespace="/" extends="struts-default">
+		<action name="system_*" class="com.pengyue.ptas.action.xt.SystemAction" method="{1}">
+			<result name="index">/sta/system/index.jsp</result>
+		</action>
+		
+		<!--系统用户管理-->
+		<action name="xtUser_*" class="com.pengyue.ptas.action.xt.XtUserAction" method="{1}">
+			<result name="list">/sta/system/system_user_list.jsp</result>
+		</action>
+	
+		<!--权限管理-->
+		<action name="xtQx_*" class="com.pengyue.ptas.action.xt.XtQxAction" method="{1}">
+			<result name="list">/sta/system/privilege_management_list.jsp</result>
+		</action>
+		
+		<!--角色管理-->
+		<action name="xtJs_*" class="com.pengyue.ptas.action.xt.XtJSAction" method="{1}">
+			<result name="list">/sta/system/role_relation_list.jsp</result>
+		</action>
+		
+		<!--数据维护-->
+		<action name="weiHu_*" class="com.pengyue.ptas.action.xt.WeiHuAction" method="{1}">
+			<result name="list">/sta/system/data_weihu_list.jsp</result>
+		</action>
+		
+		<!--导出管理-->
+		<action name="export_*" class="com.pengyue.ptas.action.xt.ExportAction" method="{1}">
+			<result name="list">/sta/system/data_export_list.jsp</result>
+		</action>
+		<!--角色和权限管理-->
+	</package>
+
+	<!--工作人员管理-->
+	<package name="persional" namespace="/" extends="struts-default">
+		<action name="user_*" class="com.pengyue.ptas.action.yy.UserManageAction" method="{1}">
+			<result name="index">/sta/personal/index.jsp</result>
+			<result name="personalList">/sta/personal/personal_list.jsp</result>
+			<result name="organizationList">/sta/personal/organization_list.jsp</result>
+		</action>
+	</package>
+	
+	<!--实训信息管理-->
+	<package name="tanningInfo" namespace="/" extends="struts-default">
+		<action name="traningInfo_*" class="com.pengyue.ptas.action.xt.TraningInfoAction" method="{1}">
+			<result name="index">/sta/trainingInfoManage/index.jsp</result>
+		</action>
+		
+		<action name="sxPlan_*" class="com.pengyue.ptas.action.yy.SxPlanAction" method="{1}">
+			<result name="index">/sta/trainingInfoManage/traning_content_list.jsp</result>
+		</action>
+	</package>
+	
+	<!--实训预约管理-->
+	<package name="tanningOrder" namespace="/" extends="struts-default">
+		<action name="traningOrder_*" class="com.pengyue.ptas.action.xt.TraningOrderAction" method="{1}">
+			<result name="index">/sta/trainingOrderManage/index.jsp</result>
+		</action>
+	</package>
+	
+	<!--平台运行环境管理-->
+	<package name="platFormRE" namespace="/" extends="struts-default">
+		<action name="platFormRE_*" class="com.pengyue.ptas.action.xt.PlatFormREAction" method="{1}">
+			<result name="index">/sta/platformREManage/index.jsp</result>
+		</action>
+	</package>
+	
+	<!--运维管理-->
+	<package name="yunWei" namespace="/" extends="struts-default">
+		<action name="yunWei_*" class="com.pengyue.ptas.action.xt.YunWeiAction" method="{1}">
+			<result name="index">/sta/yunweiSIM/index.jsp</result>
+		</action>
+	</package>
+	
+	<!--运维管理-->
+	<package name="zhApp" namespace="/" extends="struts-default">
+		<action name="zhApp_*" class="com.pengyue.ptas.action.xt.ZhAppAction" method="{1}">
+			<result name="index">/sta/comprehensiveApp/index.jsp</result>
+		</action>
+	</package>
+</struts>

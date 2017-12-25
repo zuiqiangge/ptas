@@ -1,0 +1,23 @@
+package com.pengyue.ptas.util;
+
+import javax.servlet.http.HttpSession;
+
+import org.apache.struts2.ServletActionContext;
+
+import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
+import com.pengyue.ptas.bean.XtUser;
+
+public class IsLoginInterceptor extends AbstractInterceptor{
+
+	@Override
+	public String intercept(ActionInvocation actionInvocation) throws Exception {
+		HttpSession session = ServletActionContext.getRequest().getSession();
+		ServletActionContext.getRequest().getRequestURI();
+		XtUser user = (XtUser) session.getAttribute("curUser");
+		if(null!=user)
+			actionInvocation.invoke();
+		return "login";
+	}
+
+}

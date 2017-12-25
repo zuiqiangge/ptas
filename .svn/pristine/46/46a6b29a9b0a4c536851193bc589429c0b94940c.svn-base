@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengyue.ptas.dao.yy.SxPlanDao">
+  <resultMap id="BaseResultMap" type="com.pengyue.ptas.bean.SxPlan">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="time" jdbcType="VARCHAR" property="time" />
+   <result column="sxxm_id" jdbcType="VARCHAR" property="sxProject" />
+    <result column="keep_time" jdbcType="VARCHAR" property="keepTime" />
+    <result column="place" jdbcType="VARCHAR" property="place" />
+    <result column="teacher" jdbcType="VARCHAR" property="teacher" />
+    <result column="sxdw_id" jdbcType="VARCHAR" property="sxdwId" />
+    <result column="sxdx_id" jdbcType="VARCHAR" property="sxdxId" />
+    <result column="o_name" jdbcType="VARCHAR"  property="sxdwName" />
+    <result column="t_name" jdbcType="VARCHAR"  property="sxdxName" />
+  </resultMap>
+  
+ <sql id="Base_Column_List">
+    ID,time,sxxm_id,keep_time,place,teacher,sxdw_id,sxdx_id
+  </sql>
+  
+  <!-- 一般插入 -->
+  <insert id="insert" parameterType="com.pengyue.ptas.bean.SxPlan">
+    insert into TB_sx_plan (ID,time,sxxm_id,keep_time,place,teacher,sxdw_id,sxdx_id)
+    values (sys_guid(),to_char(sysdate,'YYYY-MM-DD HH24:MI:SS'),#{name,jdbcType=VARCHAR},
+    		#{keepTime,jdbcType=VARCHAR},#{place,jdbcType=VARCHAR},
+    		#{teacher,jdbcType=VARCHAR},#{sxdwId,jdbcType=VARCHAR},#{sxdxId,jdbcType=VARCHAR})
+  </insert>
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.pengyue.ptas.bean.SxPlan">
+    update tb_sx_plan
+    <set>
+      <if test="name != null">
+        sxxm_id = #{name,jdbcType=VARCHAR},
+      </if>
+       <if test="keepTime != null">
+        keep_time = #{keepTime,jdbcType=VARCHAR},
+      </if>
+       <if test="place != null">
+        place = #{place,jdbcType=VARCHAR},
+      </if>
+       <if test="teacher != null">
+        teacher = #{teacher,jdbcType=VARCHAR},
+      </if>
+       <if test="sxdwId != null">
+        sxdw_id = #{sxdwId,jdbcType=VARCHAR},
+      </if>
+       <if test="sxdxId != null">
+        sxdx_id = #{sxdxId,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+    <delete id="delete" parameterType="java.lang.String">
+    delete from TB_sx_plan
+    
+    where ID in
+    <foreach collection="list" item="id" separator="," open="(" close=")">
+  		#{id,jdbcType=VARCHAR}
+  	</foreach>
+  </delete>
+  
+  
+   <select id="selectAll" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_sx_plan
+  </select>
+ <!--   
+  根据主键查找
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_sx_plan
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+ 
+  
+  
+<<<<<<< .mine
+  
+
+=======
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from TB_sx_plan
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+>>>>>>> .r38
+  
+  
+  
+  <insert id="insertSelective" parameterType="com.pengyue.ptas.bean.SxPlan">
+    insert into TB_sx_plan
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="sxxmId != null">
+        sxxm_id,
+      </if>
+      <if test="url != null">
+        uil,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sxxmId != null">
+        #{sxxmId,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.pengyue.ptas.bean.SxResource">
+    update tb_sx_resource
+    <set>
+      <if test="jsmc != null">
+        JSMC = #{jsmc,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <update id="updateByPrimaryKey" parameterType="com.pengyue.ptas.bean.SxResource">
+    update tb_sx_resource
+    set JSMC = #{jsmc,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update> -->
+
+  
+   <!--分页查询 -->
+  <sql id="query_condition">
+  	 select t.*
+    ,rownum rownu 
+    from TB_sx_plan t where 1=1
+  </sql>
+  <select id="getList" parameterType="com.pengyue.ptas.util.PageInfo" resultMap="BaseResultMap">
+    select *
+    from (
+    <include refid="query_condition" />
+    and rownum &lt;= #{end}) t
+    where t.rownu &gt;=#{begin}
+  </select>
+ 
+  
+  
+  <!-- 获取条件查询总条数 -->
+  <select id="getCount" parameterType="com.pengyue.ptas.bean.SxPlan" resultType="Integer">
+    select 
+   		count(*)
+    from TB_sx_plan
+  </select>
+  
+   
+  <!-- 获取excel导出信息 -->
+  <select id="getSXList" parameterType="com.pengyue.ptas.bean.SxPlan" resultMap="BaseResultMap">
+	  select * from (
+	  		SELECT A.*, ROWNUM RN from
+	  		(
+		  		select p.*,t.t_name as t_name ,o.o_name as o_name from TB_SX_PLAN p 
+		        inner join tb_training_object t on p.sxdx_id=t.t_id
+		        inner join tb_organization o on p.sxdw_id=o.o_id
+		        where 1 = 1
+		        order by p.time desc
+	        ) A
+	   )
+	   WHERE RN BETWEEN #{begin} AND #{end}       
+  </select>
+  
+  
+</mapper>

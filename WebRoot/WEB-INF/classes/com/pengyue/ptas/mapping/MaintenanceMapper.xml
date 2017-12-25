@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pengyue.ptas.dao.yy.MaintenanceDaoImpl" >
+  <resultMap id="BaseResultMap" type="com.pengyue.ptas.bean.Maintenance" >
+    <id column="m_id" property="m_id"  />
+    <result column="m_name" property="m_name"  />
+    <result column="m_sex" property="m_sex"  />
+    <result column="m_card" property="m_card"  />
+    <result column="m_call" property="m_call" />
+    <result column="m_jsxx_id" property="m_jsxx_id" />
+    <result column="m_create_time" property="m_create_time"  />
+    <result column="jsmc" property="jsmc"  />
+    <result column="m_username" property="m_username"  />
+    <result column="m_password" property="m_password"  />
+  </resultMap>
+ <!--  -->
+	<insert id="insert" parameterType="com.pengyue.ptas.bean.Maintenance">
+		insert into tb_maintenance_personnel 
+			(m_id,m_name,m_sex,m_card,m_call,m_jsxx_id,m_create_time,m_username,m_password)
+		values
+			(seq_mp_id.nextval,#{m_name},#{m_sex},#{m_card},#{m_call},#{m_jsxx_id},#{m_create_time},#{m_username},#{m_password})
+	</insert>
+	
+	<delete id="delete" parameterType="java.util.List" >
+		delete from tb_maintenance_personnel  where m_id in
+		<foreach collection="list" item="m_id" separator="," open="(" close=")">
+		 	#{m_id}
+		</foreach>
+	</delete>
+	
+	<update id="update" parameterType="com.pengyue.ptas.bean.Maintenance">
+		update tb_maintenance_personnel set 
+			m_name = #{m_name},
+			m_sex = #{m_sex},
+			m_card = #{m_card},
+			m_call = #{m_call},
+			m_username = #{m_username},
+			m_password = #{m_password}
+		where m_id = #{m_id}
+	</update>
+	
+	<select id="selectByPrimaryKey" parameterType="map" resultMap="BaseResultMap">
+		select * from tb_maintenance_personnel where m_id = #{m_id}
+	</select> 
+	
+	<select id="selectAll" resultMap="BaseResultMap">
+		select * from tb_maintenance_personnel 
+	</select>
+	
+	<select id="selectLogin" resultMap="BaseResultMap">
+		select * from tb_maintenance_personnel where 1=1
+		and  m_username = #{m_username} 
+		and  m_password = #{m_password}
+	</select> 
+	
+	<select id="selectList" parameterType="com.pengyue.ptas.bean.Maintenance" resultMap="BaseResultMap">
+		select * from (
+			SELECT A.*, ROWNUM RN from
+				(select * from tb_maintenance_personnel 
+					where 1=1
+					<if test="entity.m_name !=null ">
+					and m_name like #{entity.m_name}
+					</if>
+					order by m_create_time desc
+				) A
+		)	
+		WHERE RN BETWEEN #{begin} AND #{end}  
+    	
+	</select>
+	
+	<select id="selectCount" parameterType="com.pengyue.ptas.bean.Maintenance" resultType="java.lang.Integer">
+		select count(*) as count from tb_maintenance_personnel
+		where 1=1
+		<if test="entity.m_name !=null ">
+			and m_name like #{entity.m_name}
+		</if>
+	</select>
+	
+</mapper>

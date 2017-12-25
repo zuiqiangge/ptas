@@ -1,0 +1,5 @@
+package com.pengyue.ptas.dao.yy;
+
+public interface SxProjectDao {
+   
+}

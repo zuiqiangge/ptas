@@ -1,0 +1,93 @@
+package com.pengyue.ptas.dao.xt;
+
+import java.util.List;
+
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.pengyue.ptas.bean.XtQuanXian;
+@Repository("xtQuanXianDao")
+public class XtQuanXianDaoImpl implements XtQuanXianDao {
+	@Autowired
+	private SqlSessionTemplate sqlSessionTemplate;
+	@Override
+	public int deleteByPrimaryKey(String id) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int insert(XtQuanXian record) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int insertSelective(XtQuanXian record) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public XtQuanXian selectByPrimaryKey(String id) {
+		return sqlSessionTemplate.selectOne("com.pengyue.ptas.dao.xt.XtQuanXianDao.selectByPrimaryKey", id);
+	}
+
+	@Override
+	public int updateByPrimaryKeySelective(XtQuanXian record) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int updateByPrimaryKey(XtQuanXian record) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	
+	/***
+	 * 获取一级的权限
+	 */
+	@Override
+	public List<XtQuanXian> selectByFirstMenu() {
+		//sqlSessionTemplate.selectOne("", "","");
+		return sqlSessionTemplate.selectList("com.pengyue.ptas.dao.xt.XtQuanXianDao.selectByFirstMenu");
+	}
+
+	
+	/***
+	 * 根据父级id获取下一级子菜单
+	 */
+	@Override
+	public List<XtQuanXian> selectByParentId(String id) {
+		return sqlSessionTemplate.selectList("com.pengyue.ptas.dao.xt.XtQuanXianDao.selectByParentId",id);
+	}
+
+	
+	/***
+	 * 根据角色id获取权限
+	 */
+	@Override
+	public List<XtQuanXian> selectByRoleId(String id) {
+		return sqlSessionTemplate.selectList("com.pengyue.ptas.dao.xt.XtQuanXianDao.selectByRoleId",id);
+	}
+
+	/***
+	 * 根据用户id获取权限
+	 */
+	@Override
+	public List<XtQuanXian> selectByUserId(String userId) {
+		return sqlSessionTemplate.selectList("com.pengyue.ptas.dao.xt.XtQuanXianDao.selectByUserId",userId);
+	}
+
+	/***
+	 * 获取所有权限
+	 */
+	@Override
+	public List<XtQuanXian> selectAll() {
+		return sqlSessionTemplate.selectList("com.pengyue.ptas.dao.xt.XtQuanXianDao.selectAll");
+	}
+
+}

@@ -1,0 +1,467 @@
+package com.pengyue.ptas.action.yy;
+
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONObject;
+
+import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Controller;
+
+import com.opensymphony.xwork2.ActionSupport;
+import com.pengyue.ptas.bean.Organization;
+import com.pengyue.ptas.bean.Trained;
+import com.pengyue.ptas.bean.XtQuanXian;
+import com.pengyue.ptas.bean.XtUser;
+import com.pengyue.ptas.bean.YyGzryxxb;
+import com.pengyue.ptas.dao.yy.YyGzryxxbDao;
+import com.pengyue.ptas.service.yy.OrganizationService;
+import com.pengyue.ptas.service.yy.TrainedService;
+import com.pengyue.ptas.service.xt.XtQuanXianService;
+import com.pengyue.ptas.service.yy.YyGzryxxbService;
+import com.pengyue.ptas.util.ExportUtil;
+import com.pengyue.ptas.util.PageInfo;
+import com.pengyue.ptas.util.ResultListInfo;
+import com.pengyue.ptas.util.UserIdAndParentId;
+@Controller
+@Scope("prototype")
+public class UserManageAction extends ActionSupport {
+	@Autowired
+	private YyGzryxxbService yyGzryxxbService;
+	@Autowired
+	private XtQuanXianService qxService;
+	private YyGzryxxb yyGzryxxb = new YyGzryxxb();
+	private Integer start;
+	private Integer length;
+	private Integer draw;
+	
+	public Integer getDraw() {
+		return draw;
+	}
+
+	public void setDraw(Integer draw) {
+		this.draw = draw;
+	}
+
+	public Integer getStart() {
+		return start;
+	}
+
+	public void setStart(Integer start) {
+		this.start = start;
+	}
+
+	public Integer getLength() {
+		return length;
+	}
+
+	public void setLength(Integer length) {
+		this.length = length;
+	}
+
+	public YyGzryxxb getYyGzryxxb() {
+		return yyGzryxxb;
+	}
+
+	public void setYyGzryxxb(YyGzryxxb yyGzryxxb) {
+		this.yyGzryxxb = yyGzryxxb;
+	}
+	
+
+	/***
+	 * 进入人员管理首页
+	 * @return
+	 */
+	public String index(){
+		try{
+			//获取上级菜单id
+			String id = ServletActionContext.getRequest().getParameter("id");
+			//查询出id下级登陆用户的权限
+			XtUser xtUser = (XtUser)ServletActionContext.getRequest().getSession().getAttribute("curUser");
+			List<XtQuanXian> qxs = qxService.selectByUserIdAndParentId(new UserIdAndParentId(xtUser.getId(),id));
+			ServletActionContext.getRequest().setAttribute("qxs",qxs);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return "index";
+	}
+	
+	/***
+	 * 进入工作人员管理列表页
+	 * @return
+	 */
+	public String personalList(){
+		//获取上级菜单id
+		String id = ServletActionContext.getRequest().getParameter("id");
+		//查询出id下级登陆用户的权限
+		XtUser xtUser = (XtUser)ServletActionContext.getRequest().getSession().getAttribute("curUser");
+		List<XtQuanXian> qxs = qxService.selectByUserIdAndParentId(new UserIdAndParentId(xtUser.getId(),id));
+		ServletActionContext.getRequest().setAttribute("qxs",qxs);
+		return "personalList";
+	}
+	
+	
+	/***
+	 * 异步获取列表数据
+	 */
+	public void getPersionalListData(){
+		//模糊查询
+		if(null!=yyGzryxxb.getName()&&!yyGzryxxb.getName().isEmpty())
+			yyGzryxxb.setName("%"+yyGzryxxb.getName()+"%");
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setCharacterEncoding("UTF-8"); 
+		PrintWriter out = null;
+		try{
+			out = response.getWriter();
+			ResultListInfo<YyGzryxxb> result = yyGzryxxbService.getList(new PageInfo<YyGzryxxb>(yyGzryxxb,start,length));
+			JSONObject json = new JSONObject();
+			json.put("draw",draw);
+			json.put("recordsTotal",result.getTotal());
+			json.put("recordsFiltered",result.getTotal());
+			json.put("data",result.getResult());
+			out.print(json);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+	}
+	
+	
+	/***
+	 * 异步添加数据
+	 */
+	public void insert(){
+		HttpServletResponse response = ServletActionContext.getResponse();
+		PrintWriter out = null;
+		try{
+			out = response.getWriter();
+			int effectCount = yyGzryxxbService.insert(yyGzryxxb);
+			out.print(effectCount);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+	}
+	
+	
+	/***
+	 * 异步修改数据
+	 */
+	public void update(){
+		HttpServletResponse response = ServletActionContext.getResponse();
+		PrintWriter out = null;
+		try{
+			out = response.getWriter();
+			int effectCount = yyGzryxxbService.update(yyGzryxxb);
+			out.print(effectCount);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+	}
+	
+	
+	/***
+	 * 异步删除数据
+	 */
+	public void delete(){
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpServletResponse response = ServletActionContext.getResponse();
+		String str = request.getParameter("ids");
+		System.out.println(Arrays.asList(str.split(",")));
+		PrintWriter out = null;
+		try{
+			out = response.getWriter();
+			int effectCount = yyGzryxxbService.delete(Arrays.asList(str.split(",")));
+			out.print(effectCount);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+		
+	}
+	
+	
+	
+	
+	/**
+	 * 跳转到受训单位管理
+	 * @return
+	 */
+	public String organizationList(){
+		ServletActionContext.getRequest().setAttribute("id", ServletActionContext.getRequest().getParameter("id"));
+		return "organizationList";
+	}
+	
+	@Autowired
+	OrganizationService organizationService;
+	Organization organization = new Organization();
+	
+	
+	public Organization getOrganization() {
+		return organization;
+	}
+
+	public void setOrganization(Organization organization) {
+		this.organization = organization;
+	}
+
+	/***
+	 * 异步获取受训单位列表数据
+	 */
+	public void getOrganizationListData(){
+		//模糊查询
+		if(null!=organization.getO_name()&&!organization.getO_name().isEmpty())
+			organization.setO_name("%"+organization.getO_name()+"%");
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setCharacterEncoding("UTF-8"); 
+		PrintWriter out = null;
+		 
+		try{
+			out = response.getWriter();
+			ResultListInfo<Organization> result = organizationService.getList(new PageInfo<Organization>(organization,start,length));
+			JSONObject json = new JSONObject();
+			json.put("draw",draw);
+			json.put("recordsTotal",result.getTotal());//总记录数
+			json.put("recordsFiltered",result.getTotal());
+			json.put("data",result.getResult());//记录列表
+			System.out.println("----  "+result.getResult());
+			out.print(json);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out){
+				out.close();
+			}
+		}
+	}
+	
+	/***
+	 * 异步添加受训单位信息数据
+	 */
+	public void insertOrganization(){
+		HttpServletResponse response = ServletActionContext.getResponse();
+		PrintWriter out = null;
+		try{
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date date = new Date();
+			String str = format.format(date);
+			organization.setO_create_time(str);
+			System.out.println("organization = "+organization.toString());
+			out = response.getWriter();
+			int effectCount = organizationService.insert(organization);
+			out.print(effectCount);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+	}
+	
+	/***
+	 * 异步修改受训单位数据
+	 */
+	public void updateOrganization(){
+		HttpServletResponse response = ServletActionContext.getResponse();
+		PrintWriter out = null;
+		try{
+			System.out.println("organization = "+organization.toString());
+			out = response.getWriter();
+			int effectCount = organizationService.update(organization);
+			out.print(effectCount);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+	}
+	
+	/***
+	 * 异步删除受训单位数据
+	 */
+	public void deleteOrganization(){
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpServletResponse response = ServletActionContext.getResponse();
+		String str = request.getParameter("ids");
+		List<String>  ids = new ArrayList<String>();
+		PrintWriter out = null;
+		try{
+			System.out.println("Arrays.asList(str.split(',')==="+Arrays.asList(str.split(",")));
+			if(Arrays.asList(str.split(","))!=null){
+				ids = Arrays.asList(str.split(","));
+			}else{
+				ids.add("0");
+			}
+			out = response.getWriter();
+			int effectCount = organizationService.delete(ids);
+			out.print(effectCount);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+		
+	}
+	
+	
+	
+	/**
+	 * 跳转到受训对象管理
+	 * @return
+	 */
+	public String trainedList(){
+		ServletActionContext.getRequest().setAttribute("id", ServletActionContext.getRequest().getParameter("id"));
+		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
+		list = organizationService.getOrganization();
+		ServletActionContext.getRequest().setAttribute("list", list);
+		return "trainedList";
+	}
+	
+	Trained trained = new Trained();
+	
+	public Trained getTrained() {
+		return trained;
+	}
+
+	public void setTrained(Trained trained) {
+		this.trained = trained;
+	}
+
+	@Autowired
+	TrainedService trainedService;
+	
+	/***
+	 * 异步获取受训对象列表数据
+	 */
+	
+	public void getTrainedListData(){
+		//模糊查询
+		if(null!=trained.getT_name()&&!trained.getT_name().isEmpty())
+			trained.setT_name("%"+trained.getT_name()+"%");
+		if(null!=trained.getO_name()&&!trained.getO_name().isEmpty())
+			trained.setO_name("%"+trained.getO_name()+"%");
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setCharacterEncoding("UTF-8"); 
+		PrintWriter out = null;
+		try{
+			out = response.getWriter();
+			ResultListInfo<Trained> result = trainedService.getList(new PageInfo<Trained>(trained,start,length));
+			JSONObject json = new JSONObject();
+			json.put("draw",draw);
+			json.put("recordsTotal",result.getTotal());//总记录数
+			json.put("recordsFiltered",result.getTotal());
+			json.put("data",result.getResult());//记录列表
+			System.out.println("----  "+result.getResult());
+			//保存数据  用作导出
+			ExportUtil.listTrained=result.getResult();
+			out.print(json);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out){
+				out.close();
+			}
+		}
+	}
+	
+	/***
+	 * 异步添加受训对象信息数据
+	 */
+	public void insertTrained(){
+		HttpServletResponse response = ServletActionContext.getResponse();
+		PrintWriter out = null;
+		try{
+			System.out.println("trained = "+trained.toString());
+			out = response.getWriter();
+			int effectCount = trainedService.insert(trained);
+			out.print(effectCount);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+	}
+	
+	/***
+	 * 异步修改受训对象数据
+	 */
+	public void updateTrained(){
+		HttpServletResponse response = ServletActionContext.getResponse();
+		PrintWriter out = null;
+		try{
+			System.out.println("trained = "+trained.toString());
+			out = response.getWriter();
+			int effectCount = trainedService.update(trained);
+			out.print(effectCount);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+	}
+	
+	/***
+	 * 异步删除受训单位数据
+	 */
+	public void deleteTrained(){
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpServletResponse response = ServletActionContext.getResponse();
+		String str = request.getParameter("ids");
+		List<String>  ids = new ArrayList<String>();
+		PrintWriter out = null;
+		try{
+			System.out.println("Arrays.asList(str.split(',')==="+Arrays.asList(str.split(",")));
+			if(Arrays.asList(str.split(","))!=null){
+				ids = Arrays.asList(str.split(","));
+			}else{
+				ids.add("0");
+			}
+			out = response.getWriter();
+			int effectCount = trainedService.delete(ids);
+			out.print(effectCount);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+		
+	}
+	
+	public static void main(String[] args) {
+		ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+		YyGzryxxbDao dao = (YyGzryxxbDao) context.getBean("yyGzryxxbDao");
+		YyGzryxxb aa = new YyGzryxxb();
+		aa.setAge("55");
+		dao.getList(new PageInfo<YyGzryxxb>(aa,1,3));
+		//XtUserDao dao = (XtUserDao) context.getBean("xtUserDao");
+		//dao.selectByPrimaryKey("dd2bd60f09304f43bd8579927ac6f026");
+	}
+}

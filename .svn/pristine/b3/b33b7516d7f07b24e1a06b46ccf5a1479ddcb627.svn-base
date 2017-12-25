@@ -1,0 +1,312 @@
+package com.pengyue.ptas.action.xt;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
+import com.opensymphony.xwork2.ActionSupport;
+import com.pengyue.ptas.bean.XtJS;
+import com.pengyue.ptas.bean.XtJSAndUser;
+import com.pengyue.ptas.bean.XtJsQx;
+import com.pengyue.ptas.bean.XtQuanXian;
+import com.pengyue.ptas.bean.XtUser;
+import com.pengyue.ptas.service.xt.XtJSService;
+import com.pengyue.ptas.service.xt.XtJsQxService;
+import com.pengyue.ptas.service.xt.XtQuanXianService;
+import com.pengyue.ptas.util.UserIdAndParentId;
+@Controller
+@Scope("prototype")
+public class XtQxAction extends ActionSupport{
+	@Autowired
+	private XtQuanXianService xqService;
+	@Autowired
+	private XtJSService xtJSService;
+	@Autowired
+	private XtJsQxService xtJsQxService;
+	
+	private XtQuanXian xtQx;
+	
+	
+	public XtQuanXian getXtQx() {
+		return xtQx;
+	}
+
+
+	public void setXtQx(XtQuanXian xtQx) {
+		this.xtQx = xtQx;
+	}
+
+
+	/***
+	 * 跳转权限管理页面
+	 * @return
+	 */
+	public String list(){
+		try{
+			//获取上级菜单id
+			String id = ServletActionContext.getRequest().getParameter("id");
+			//查询出id下级登陆用户的权限
+			XtUser xtUser = (XtUser)ServletActionContext.getRequest().getSession().getAttribute("curUser");
+			List<XtQuanXian> qxs = xqService.selectByUserIdAndParentId(new UserIdAndParentId(xtUser.getId(),id));
+			ServletActionContext.getRequest().setAttribute("qxs",qxs);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return "list";
+	}
+	
+	
+	/***
+	 * 异步获取权限
+	 */
+	public void getQxList(){
+		//主菜单
+		JSONArray result = new JSONArray();
+		PrintWriter out = null;
+		try{
+			String id = ServletActionContext.getRequest().getParameter("id");
+			String jsId = ServletActionContext.getRequest().getParameter("jsId");
+			List<XtQuanXian> selectedMenu = xqService.selectByRoleId(jsId);
+			HttpServletResponse response = ServletActionContext.getResponse();
+			response.setCharacterEncoding("utf-8");
+			out = response.getWriter();
+			JSONArray reult = null;
+			reult = setBean(xqService.selectAll(),selectedMenu);
+			/*if(null==id)
+				reult = setBean(xqService.selectByFirstMenu(),selectedMenu);
+			else
+				reult = setBean(xqService.selectByParentId(id),selectedMenu);*/
+			out.print(reult);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+	}
+	
+	
+	
+	/***
+	 * 异步获取权限(逐渐获取)
+	 */
+	public void getQx(){
+		//主菜单
+		PrintWriter out = null;
+		try{
+			String id = ServletActionContext.getRequest().getParameter("id");
+			HttpServletResponse response = ServletActionContext.getResponse();
+			response.setCharacterEncoding("utf-8");
+			out = response.getWriter();
+			JSONArray reult = null;
+			if(null==id)
+				reult = setBean(xqService.selectByFirstMenu());
+			else
+				reult = setBean(xqService.selectByParentId(id));
+			out.print(reult);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+	}
+	
+	
+	/***
+	 * 设置权限
+	 */
+	public void setQx(){
+		PrintWriter out = null;
+		try {
+			//被改变的节点
+			String nodesStr = ServletActionContext.getRequest().getParameter("nodes");
+			List<JSONObject> nodes = JSONArray.fromObject(nodesStr);
+			//要添加权限id的容器
+			List<String> add = new ArrayList<String>();
+			//要删除权限的容器
+			List<String> del = new ArrayList<String>();
+			for(JSONObject obj:nodes){
+				if(obj.getBoolean("checked"))
+					add.add(obj.getString("id"));
+				else
+					del.add(obj.getString("id"));
+			}
+			String jsId = ServletActionContext.getRequest().getParameter("jsid");
+			
+			int effectNum = 0;
+			//添加权限
+			for(String id:add){
+				XtJsQx x = new XtJsQx();
+				x.setJsId(jsId);
+				x.setQxId(id);
+				effectNum+=xtJsQxService.insert(x);
+			}
+			//删除权限
+			for(String id:del){
+				XtJsQx x = new XtJsQx();
+				x.setJsId(jsId);
+				x.setQxId(id);
+				effectNum+=xtJsQxService.deleteByProperty(x);
+			}
+			
+			out = ServletActionContext.getResponse().getWriter();
+			out.print(effectNum);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+	}
+	
+	/***
+	 * 修改权限名称
+	 */
+	public void rename(){
+		PrintWriter out = null;
+		try{
+			out = ServletActionContext.getResponse().getWriter();
+			String nodeStr = ServletActionContext.getRequest().getParameter("node");
+			JSONObject json = JSONObject.fromObject(nodeStr);
+			XtQuanXian qx  = new XtQuanXian();
+			qx.setId(json.getString("id"));
+			qx.setQxmc(json.getString("name"));
+			int num = xqService.updateByPrimaryKeySelective(qx);
+			out.print(num);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+		
+	}
+	
+	/***
+	 * 删除权限 
+	 */
+	public void del(){
+		PrintWriter out = null;
+		try{
+			out = ServletActionContext.getResponse().getWriter();
+			String nodeStr = ServletActionContext.getRequest().getParameter("node");
+			JSONObject json = JSONObject.fromObject(nodeStr);
+			//删除权限配置表
+			XtJsQx jsQx = new XtJsQx();
+			jsQx.setQxId(json.getString("id"));
+			xtJsQxService.deleteByProperty(jsQx);
+			//删除权限
+			int num = xqService.deleteByPrimaryKey(json.getString("id"));
+			out.print(num);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+	}
+	
+	/***
+	 * 添加权限
+	 */
+	public void add(){
+		PrintWriter out = null;
+		try{
+			out = ServletActionContext.getResponse().getWriter();
+			//父菜单
+			XtQuanXian parent = xqService.selectByPrimaryKey(xtQx.getParentId());
+			System.out.println(parent.getLevels());
+			String levels = parent.getLevels();
+			xtQx.setLevels((Integer.parseInt(levels)+1)+"");
+			String orders = xqService.selectMaxOrdersByParentId(xtQx.getParentId());
+			if(null==orders)
+				xtQx.setOrders(parent.getOrders()+".1");
+			else{
+				String[] or = orders.split("\\.");
+				String str ="";
+				for(int i=0;i<or.length;i++){
+					if(i==or.length-1){
+						or[i] = (Integer.parseInt(or[i])+1)+"";
+						str+=or[i];
+					}else
+						str+=or[i]+".";	
+				}
+				System.out.println(str);
+				xtQx.setOrders(str);
+			}
+			int num = xqService.insert(xtQx);
+			out.print(num);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(null!=out)
+				out.close();
+		}
+	}
+	
+	public JSONArray setBean(List<XtQuanXian> qxs,List<XtQuanXian> selectedMenu){
+		JSONArray list = new JSONArray();
+		for(XtQuanXian qx:qxs){
+			Map<Object,Object> map =new HashMap<Object,Object>();
+			JSONObject obj = new JSONObject();
+			obj.put("id", qx.getId());
+			obj.put("name", qx.getQxmc());
+			
+			for(XtQuanXian qxed:selectedMenu){
+				if(qx.getId().equals(qxed.getId()))
+					obj.put("checked",true);
+			}
+			obj.put("pId", qx.getParentId()==null?"0":qx.getParentId());
+			List<XtQuanXian> result = xqService.selectByParentId(qx.getId());
+			if(result.size()>0){
+				obj.put("isParent",true);
+				obj.put("open", true);
+			}else{
+				obj.put("isParent", false);
+				obj.put("open", false);
+			}
+			
+			list.add(obj);	
+		}
+		return list;
+	}
+	
+	
+	public JSONArray setBean(List<XtQuanXian> qxs){
+		JSONArray list = new JSONArray();
+		for(XtQuanXian qx:qxs){
+			JSONObject obj = new JSONObject();
+			obj.put("id", qx.getId());
+			obj.put("name", qx.getQxmc());
+			obj.put("pId", qx.getParentId()==null?"0":qx.getParentId());
+			List<XtQuanXian> result = xqService.selectByParentId(qx.getId());
+			if(result.size()>0){
+				obj.put("isParent",true);
+				obj.put("open", true);
+			}else{
+				obj.put("isParent", false);
+				obj.put("open", false);
+			}
+			list.add(obj);	
+		}
+		return list;
+	}
+	
+}

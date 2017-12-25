@@ -1,0 +1,23 @@
+package com.pengyue.ptas.dao.xt;
+
+import java.util.List;
+
+import com.pengyue.ptas.bean.XtJsQx;
+
+public interface XtJsQxDao {
+	 int deleteByPrimaryKey(String id);
+
+	    int insert(XtJsQx record);
+
+	    int insertSelective(XtJsQx record);
+
+	    XtJsQx selectByPrimaryKey(String id);
+
+	    int updateByPrimaryKeySelective(XtJsQx record);
+
+	    int updateByPrimaryKey(XtJsQx record);
+	    
+	    List<XtJsQx> selectByProperty(XtJsQx record);
+	    
+	    int deleteByJsId(String jsId);
+}

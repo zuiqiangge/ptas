@@ -1,0 +1,30 @@
+package com.pengyue.ptas.util;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.pengyue.ptas.bean.SoftWareLog;
+import com.pengyue.ptas.service.xt.SoftWareLogService;
+
+public class InitListener{
+	
+	public InitListener() {
+		System.out.println("fdsfsdfsdfs");
+		//logService.insert(new SoftWareLog("开启",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()),null));   
+	}
+
+	@Autowired
+    private SoftWareLogService logService;
+    public void contextDestroyed(ServletContextEvent sce) {    
+    	//logService.insert(new SoftWareLog("关闭",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()),null));   
+    }    
+    
+    public void contextInitialized(ServletContextEvent sce) {    
+    	//logService.insert(new SoftWareLog("开启",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()),null));   
+    }    
+}   

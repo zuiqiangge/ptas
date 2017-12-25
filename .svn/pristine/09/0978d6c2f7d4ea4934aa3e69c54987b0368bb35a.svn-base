@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengyue.ptas.dao.xt.XtQuanXianDao">
+  <resultMap id="BaseResultMap" type="com.pengyue.ptas.bean.XtQuanXian">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="QXMC" jdbcType="VARCHAR" property="qxmc" />
+    <result column="URL" jdbcType="VARCHAR" property="url" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="levels" jdbcType="VARCHAR" property="levels" />
+    <result column="orders" jdbcType="VARCHAR" property="orders" />
+    <result column="class" jdbcType="VARCHAR" property="classs" />
+  </resultMap>
+  
+  
+  <sql id="Base_Column_List">
+    ID, QXMC, URL,parent_id,levels,orders,class
+  </sql>
+  <!--根据主键获取-->
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_XT_QXXX
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+   <!--获取全部-->
+  <select id="selectAll" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_XT_QXXX order by orders
+  </select>
+  
+  <!--根据角色获取权限对象-->
+   <select id="selectByRoleId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+   from tb_xt_qxxx qx where qx.id in 
+	(
+       select qx_id from tb_xt_jsxx_qxxx jsqx where jsqx.js_id in (#{jsid,jdbcType=VARCHAR})
+	)
+  </select>
+  
+   <!--根据用户获取权限对象-->
+   <select id="selectByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+  from tb_xt_qxxx qx where qx.id in 
+	(
+       select qx_id from tb_xt_jsxx_qxxx jsqx where jsqx.js_id in 
+       (
+              select js_id from tb_xt_jsxx_user jsuser where jsuser.userid = #{userid,jdbcType=VARCHAR}
+       )
+	)
+  </select>
+  
+  <!--获取一级对象-->
+   <select id="selectByFirstMenu" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_XT_QXXX where levels = '1' order by orders
+  </select>
+  
+  <!--根据父级id获取-->
+   <select id="selectByParentId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_XT_QXXX
+    where parent_id = #{parentId,jdbcType=VARCHAR} order by orders
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from TB_XT_QXXX
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.pengyue.ptas.bean.XtQuanXian">
+    insert into TB_XT_QXXX (ID, QXMC, URL
+      )
+    values (#{id,jdbcType=VARCHAR}, #{qxmc,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}
+      )
+      
+      
+  </insert>
+  <insert id="insertSelective" parameterType="com.pengyue.ptas.bean.XtQuanXian">
+    insert into TB_XT_QXXX
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="qxmc != null">
+        QXMC,
+      </if>
+      <if test="url != null">
+        URL,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="qxmc != null">
+        #{qxmc,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pengyue.ptas.bean.XtQuanXian">
+    update TB_XT_QXXX
+    <set>
+      <if test="qxmc != null">
+        QXMC = #{qxmc,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        URL = #{url,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pengyue.ptas.bean.XtQuanXian">
+    update TB_XT_QXXX
+    set QXMC = #{qxmc,jdbcType=VARCHAR},
+      URL = #{url,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+ 
+  
+</mapper>
